@@ -1,0 +1,151 @@
+src/
+├── main.tsx
+├── App.tsx
+├── index.css
+│
+├── env.tsx                     // baseURL, environment variables
+│
+├── layouts/
+│   └── DashboardLayout.tsx     // Sidebar + Header + Outlet
+│
+├── routes/
+│   ├── index.tsx               // Router configuration
+│   ├── PrivateRoute.tsx        // Protect routes + role-based access
+│   └── roleRoutes.ts           // Role-specific route mappings
+│
+├── pages/
+│   ├── auth/
+│   │   └── Login.tsx
+│   │
+│   ├── manager/                // Manager only pages
+│   │   ├── Sections/
+│   │   │   ├── SectionsList.tsx
+│   │   │   ├── CreateSection.tsx
+│   │   │   ├── EditSection.tsx
+│   │   │   └── SectionDetails.tsx
+│   │   │
+│   │   ├── Employees/
+│   │   │   ├── EmployeesList.tsx
+│   │   │   ├── AddEmployee.tsx
+│   │   │   ├── HireToSection.tsx
+│   │   │   ├── AssignToSection.tsx
+│   │   │   ├── TransitionToSection.tsx
+│   │   │   └── FireEmployee.tsx
+│   │   │
+│   │   ├── TransactionTemplates/
+│   │   │   ├── TemplatesList.tsx
+│   │   │   ├── CreateTemplate.tsx
+│   │   │   ├── TemplateDetails.tsx
+│   │   │   ├── ToggleTemplateActive.tsx
+│   │   │   └── RequiredIntialData/
+│   │   │       ├── IntialDataKeysList.tsx
+│   │   │       ├── AddIntialDataKey.tsx
+│   │   │       ├── EditIntialDataKey.tsx
+│   │   │       ├── ToggleKeyRequired.tsx
+│   │   │       └── BulkAddIntialDataKeys.tsx
+│   │   │
+│   │   └── Requests/
+│   │       ├── RunningRequestsList.tsx
+│   │       └── RequestDetails.tsx
+│   │
+│   ├── co-manager/             // Co-manager only pages
+│   │   ├── Employees/
+│   │   │   ├── EmployeesList.tsx
+│   │   │   ├── AssignToSection.tsx
+│   │   │   ├── TransitionToSection.tsx
+│   │   │   └── AllEmployeesData.tsx
+│   │   │
+│   │   ├── Sections/
+│   │   │   └── SectionsList.tsx
+│   │   │
+│   │   └── Requests/
+│   │       ├── IncomingRequestsList.tsx
+│   │       └── RequestDetails.tsx
+│   │
+│   ├── employee/               // Employee only pages
+│   │   ├── PendingRequestsList.tsx
+│   │   ├── RequestDetails.tsx
+│   │   ├── ProcessRequest.tsx
+│   │   └── MyProfile.tsx
+│   │
+│   └── shared/                 // Shared pages (if any)
+│       └── NotFound.tsx
+│
+├── components/
+│   ├── common/
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Select.tsx
+│   │   ├── Modal.tsx
+│   │   ├── LoadingSpinner.tsx
+│   │   ├── Pagination.tsx
+│   │   ├── DataTable.tsx
+│   │   ├── Toast.tsx
+│   │   └── ThemeToggle.tsx
+│   │
+│   ├── layout/
+│   │   ├── Sidebar.tsx
+│   │   ├── SidebarItem.tsx
+│   │   ├── Header.tsx
+│   │   └── ProfileDropdown.tsx
+│   │
+│   └── forms/
+│       ├── EmployeeForm.tsx
+│       ├── SectionForm.tsx
+│       ├── TemplateForm.tsx
+│       └── IntialDataKeyForm.tsx
+│
+├── stores/                     // Zustand stores
+│   ├── authStore.ts           // token, user, role, institution, section, login, logout
+│   ├── themeStore.ts          // dark/light mode
+│   ├── institutionStore.ts    // current institution data
+│   ├── sectionStore.ts        // sections list, filters
+│   ├── employeeStore.ts       // employees list, pagination
+│   ├── templateStore.ts       // transaction templates
+│   ├── requestStore.ts        // running/pending requests
+│   └── uiStore.ts             // sidebar collapsed, loading modals
+│
+├── services/                   // API calls (Axios)
+│   ├── api.ts                 // Axios instance with interceptors (token, baseURL)
+│   ├── auth.service.ts
+│   ├── sections.service.ts
+│   ├── employees.service.ts
+│   ├── templates.service.ts
+│   ├── requests.service.ts
+│   └── institution.service.ts
+│
+├── hooks/                      // Custom hooks
+│   ├── useAuth.ts
+│   ├── useRoleAccess.ts
+│   ├── useDebounce.ts
+│   ├── usePagination.ts
+│   └── useNotification.ts
+│
+├── types/                      // TypeScript types
+│   ├── user.types.ts          // User, Role
+│   ├── institution.types.ts
+│   ├── section.types.ts
+│   ├── employee.types.ts
+│   ├── template.types.ts      // TransactionTemplate, TransactionStep
+│   ├── request.types.ts       // Request, RequestStep, StepStatus
+│   ├── intialData.types.ts    // RequiredIntialDataKey
+│   └── api.types.ts           // Pagination, ApiResponse
+│
+├── schemas/                    // Zod validation schemas
+│   ├── auth.schema.ts
+│   ├── section.schema.ts
+│   ├── employee.schema.ts
+│   ├── template.schema.ts
+│   ├── intialDataKey.schema.ts
+│   └── requestProcess.schema.ts
+│
+├── utils/
+│   ├── constants.ts
+│   ├── dateFormatter.ts
+│   ├── roleHelpers.ts         // getRoleRoutes, canAccess, isManager, isCoManager, isEmployee
+│   ├── tokenUtils.ts
+│   └── errorHandler.ts
+│
+└── assets/
+    ├── icons/
+    └── logos/
