@@ -1,0 +1,76 @@
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    direction: rtl;
+    border: var(--color-outine) 0.1rem solid;
+    border-bottom: none;
+    border-radius: 2rem;
+    corner-shape: squircle;
+    table-layout: fixed;
+}
+
+.customTable {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.customTable thead tr {
+    white-space: nowrap;
+    color: var(--color-text);
+    font-size: 1.07rem;
+    background-color: var(--color-action-hover);
+    border-bottom: 0.1rem solid var(--color-table-outline);
+}
+
+.customTable th,
+.customTable td {
+    padding: 0.3rem 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 0.1rem solid var(--color-outine);
+}
+
+.customTable th {
+    color: white;
+}
+
+.customTable td {
+    color: var(--color-text);
+}
+
+.customTable tbody tr:nth-of-type(even) {
+    background-color: var(--color-table-row);
+}
+
+.customTable tbody tr:hover {
+    background-color: color-mix(in srgb, var(--color-action), transparent 80%);
+    transition: 0.2s ease;
+}
+
+.statusBadge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #e0eef9;
+    font-size: 0.85rem;
+}
+
+@media screen and (max-width: 656px){
+    .customTable {
+        table-layout: fixed;
+        writing-mode: vertical-rl;
+        direction: ltr;
+    }
+    
+    .customTable th,
+    .customTable td {
+        writing-mode: horizontal-tb;
+        white-space: wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-bottom: 0.1rem solid var(--color-outine);
+    }
+}

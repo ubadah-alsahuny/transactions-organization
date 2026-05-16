@@ -1,0 +1,37 @@
+:root{
+    --color-primary: #f9fafb;
+
+/* =========================
+   Navigation - light theme colors
+   ========================= */
+    --color-accent: #054239;
+
+    --color-top-row: #988561;
+    --color-stripped-rows: #E0DCCE;
+    --color-hovered-row: 	#b9a779;
+    --color-table-outline: #3d3a3b;
+
+/* =========================
+   Text in Table - light theme colors
+   ========================= */
+    --color-text: #171717;
+    --color-text-on-black: #b9a779;
+    --color-top-of-table-text: #edebe0;
+    --color-text-button: #fff;
+
+    --color-section: #fefefe;
+
+    --color-action: #428177;
+    --color-action-hover: #054239;
+
+    --color-sub-text: #9da9af;
+
+    --color-outine: #e5e5e5;
+
+    --color-logo: 25%;
+
+    --color-danger: #6b1f2a;
+    --color-danger-hover: #4a151e;
+
+    --color-input: #757575;
+}

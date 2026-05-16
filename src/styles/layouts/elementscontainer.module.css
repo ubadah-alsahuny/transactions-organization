@@ -1,0 +1,26 @@
+.container_settings{
+    width: 50%;
+    place-content: center;
+    place-items: center;
+    place-self: center;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-action), transparent 75%), color-mix(in srgb, var(--color-action), transparent 100%));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999;
+    outline: var(--color-outine) solid 1px;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    corner-shape: squircle;
+}
+
+@media screen and (max-width: 1170px){
+    .container_settings{
+        width: 75%;
+    }
+}
+
+@media screen and (max-width: 790px){
+    .container_settings{
+        width: 100%;
+    }
+}

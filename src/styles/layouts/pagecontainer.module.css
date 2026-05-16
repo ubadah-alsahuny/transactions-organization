@@ -1,0 +1,11 @@
+.page_container_settings{
+    width: 100%;
+    place-items: center;
+    padding: 0 2rem;
+}
+
+@media screen and (max-width: 656px) {
+    .page_container_settings{
+        padding: 0 0.5rem;
+    }
+}

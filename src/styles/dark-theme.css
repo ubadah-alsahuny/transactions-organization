@@ -1,0 +1,38 @@
+html.dark-theme {
+    /* Page / base */
+    --color-primary: #1a1f22;
+
+    /* =========================
+       Navigation
+       ========================= */
+    --color-accent: #428177;
+
+    --color-top-row: #054239;
+    --color-stripped-rows: #043832;
+    --color-hovered-row: #054239;
+    --color-table-outline: #3d3a3b;
+
+    /* =========================
+       Text in Table
+       ========================= */
+    --color-text: #ffffff;
+    --color-text-on-black: #edebe0;
+    --color-top-of-table-text: #ffffff;
+    --color-text-button: #ffffff;
+
+    --color-section: #0d1315;
+
+    --color-action: #428177;
+    --color-action-hover: #054239;
+
+    --color-outine: #313638;
+
+    --color-table-row: #1a1f22;
+
+    --color-logo: 200%;
+
+    --color-danger: #6b1f2a;
+    --color-danger-hover: #4a151e;
+
+    --color-input: #757575;
+}

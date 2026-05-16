@@ -1,0 +1,120 @@
+/* =========================
+   Header CSS
+========================= */
+
+.header_settings{
+    width: 100%;
+    height: fit-content;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    /* 2. The core blur effect on the background behind the element */
+    backdrop-filter: blur(8px) saturate(180%);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+
+    border-bottom: 1px solid var(--color-outine);
+}
+
+.header_items_container{
+    display: flex !important;
+    margin: 0;
+    gap: 1rem !important;
+    place-items: center;
+}
+
+.navigation_header_buttons{
+    display: flex;
+    gap: 0.5rem;
+    width: 45%;
+}
+
+.header_icons {
+    color: var(--color-text);
+
+    border-radius: 2rem;
+    corner-shape: squircle;
+
+    transition: all 0.2s ease-in-out;
+}
+
+.header_icons:hover{
+    cursor: pointer;
+    background-color: var(--color-outine);
+    border-radius: 2rem;
+    corner-shape: squircle;
+}
+
+.left_panel{
+    display: flex !important;
+    gap: 1.5rem !important;
+    padding: 0.5rem 0.75rem;
+    margin-right: auto;
+    margin-left: 1rem;
+    place-items: center;
+    border-radius: 2rem;
+    corner-shape: squircle;
+    background-color: var(--color-section);
+}
+
+.syrian_logo{
+    width: 4rem;
+    height: 4rem;
+    margin-right: 1rem;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(283deg) brightness(var(--color-logo)) contrast(103%);
+}
+
+.toggle_settings{
+    display: none;
+}
+
+/* =========================
+   Footer CSS
+========================= */
+
+.footer_settings{
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+
+    padding: 1.7rem;
+
+    background-color: var(--color-section);
+    border-top: 1px solid var(--color-outine);
+}
+
+.footer_settings h4, .footer_settings h5{
+    color: var(--color-text);
+}
+
+@media screen and (max-width: 600px){
+    .navigation_header_buttons{
+        display: none;
+    }
+    .toggle_settings{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 750px){
+    .theme_icons{
+        display: none;
+    }
+    .toggle_settings{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 680px){
+    .header_buttons{
+        display: none;
+    }
+    .toggle_settings{
+        display: revert;
+    }
+    .syrian_logo{
+        margin-right: 0;
+    }
+}
+
