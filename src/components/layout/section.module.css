@@ -1,12 +1,10 @@
 .section {
     width: 100%;
-
     margin-top: 1rem;
     margin-bottom: 1rem;
     background-color: var(--color-section);
     border: 1px solid var(--color-outine);
     border-radius: 3.5rem;
-    corner-shape: squircle;
     padding: 1.5rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0 0.27rem 0.7rem;
     direction: rtl;

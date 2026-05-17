@@ -1,8 +1,8 @@
 .layouts_container {
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .settings {
@@ -12,11 +12,9 @@
 .title_container {
     padding-top: 2rem;
     padding-bottom: 2.5rem;
-
     display: grid;
     place-items: center;
     justify-content: center;
-
     background-color: var(--color-section);
     border-bottom: 1px solid var(--color-outine);
     box-shadow: rgba(0, 0, 0, 0.1) 0 0.27rem 0.7rem;

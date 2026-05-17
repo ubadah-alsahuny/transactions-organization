@@ -5,7 +5,6 @@
     border: var(--color-outine) 0.1rem solid;
     border-bottom: none;
     border-radius: 2rem;
-    corner-shape: squircle;
     table-layout: fixed;
 }
 

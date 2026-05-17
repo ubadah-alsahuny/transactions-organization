@@ -10,7 +10,6 @@
     outline: var(--color-outine) solid 1px;
     padding: 1rem 2rem;
     border-radius: 2rem;
-    corner-shape: squircle;
 }
 
 @media screen and (max-width: 1170px){

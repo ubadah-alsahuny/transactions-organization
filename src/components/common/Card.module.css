@@ -1,13 +1,9 @@
 .card_container {
     display: flex;
     place-items: center;
-
     border: 1px solid var(--color-outine);
     border-radius: 2rem;
-    corner-shape: squircle;
-
     overflow: hidden;
-
     gap: 0.7rem !important;
 }
 
@@ -26,9 +22,7 @@
 
 .image_container {
     display: flex;
-
     overflow: hidden;
-
     background-color: #988561;
     border-radius: 0.75rem 0.75rem 0 0;
 }
@@ -36,15 +30,12 @@
 .image_settings {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     background-color: white;
-
     transition: all 0.2s ease-in-out;
 }
 
-.image_settings:hover{
+.image_settings:hover {
     overflow: hidden;
     scale: 1.07;
 }

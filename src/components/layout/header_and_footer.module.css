@@ -8,11 +8,8 @@
     position: sticky;
     top: 0;
     z-index: 999;
-
-    /* 2. The core blur effect on the background behind the element */
     backdrop-filter: blur(8px) saturate(180%);
     -webkit-backdrop-filter: blur(8px) saturate(180%);
-
     border-bottom: 1px solid var(--color-outine);
 }
 
@@ -31,10 +28,7 @@
 
 .header_icons {
     color: var(--color-text);
-
     border-radius: 2rem;
-    corner-shape: squircle;
-
     transition: all 0.2s ease-in-out;
 }
 
@@ -42,7 +36,6 @@
     cursor: pointer;
     background-color: var(--color-outine);
     border-radius: 2rem;
-    corner-shape: squircle;
 }
 
 .left_panel{
@@ -53,7 +46,6 @@
     margin-left: 1rem;
     place-items: center;
     border-radius: 2rem;
-    corner-shape: squircle;
     background-color: var(--color-section);
 }
 
@@ -75,11 +67,8 @@
 .footer_settings{
     display: grid;
     place-items: center;
-
     width: 100%;
-
     padding: 1.7rem;
-
     background-color: var(--color-section);
     border-top: 1px solid var(--color-outine);
 }
@@ -117,4 +106,3 @@
         margin-right: 0;
     }
 }
-

@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  /* Core Theme Colors mapped to CSS Custom Properties */
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
+  --color-top-row: var(--color-top-row);
+  --color-stripped-rows: var(--color-stripped-rows);
+  --color-hovered-row: var(--color-hovered-row);
+  --color-table-outline: var(--color-table-outline);
+
+  /* Text & Typography Colors */
+  --color-text: var(--color-text);
+  --color-text-on-black: var(--color-text-on-black);
+  --color-top-of-table-text: var(--color-top-of-table-text);
+  --color-text-button: var(--color-text-button);
+
+  /* Page Sections & Cards */
+  --color-section: var(--color-section);
+  --color-action: var(--color-action);
+  --color-action-hover: var(--color-action-hover);
+  --color-sub-text: var(--color-sub-text);
+  --color-outine: var(--color-outine);
+  --color-outline: var(--color-outine); /* Alias to prevent typos */
+
+  /* UI Variables */
+  --color-table-row: var(--color-table-row);
+  --color-logo: var(--color-logo);
+  --color-danger: var(--color-danger);
+  --color-danger-hover: var(--color-danger-hover);
+  --color-input: var(--color-input);
+
+  /* Fonts & Animations */
+  --font-main: "Outfit", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================================
+   LIGHT THEME VARIABLES
+   ========================================================== */
+:root {
+  --color-primary: #f9fafb;
+  --color-accent: #054239;
+  --color-top-row: #988561;
+  --color-stripped-rows: #E0DCCE;
+  --color-hovered-row: #b9a779;
+  --color-table-outline: #3d3a3b;
+
+  --color-text: #171717;
+  --color-text-on-black: #b9a779;
+  --color-top-of-table-text: #edebe0;
+  --color-text-button: #fff;
+
+  --color-section: #fefefe;
+  --color-action: #428177;
+  --color-action-hover: #054239;
+  --color-sub-text: #9da9af;
+  --color-outine: #e5e5e5;
+
+  --color-table-row: #ffffff;
+  --color-logo: 25%;
+  --color-danger: #6b1f2a;
+  --color-danger-hover: #4a151e;
+  --color-input: #757575;
+}
+
+/* ==========================================================
+   DARK THEME VARIABLES
+   Supports both 'dark-theme' and Tailwind's standard 'dark' class
+   ========================================================== */
+html.dark-theme, html.dark {
+  --color-primary: #1a1f22;
+  --color-accent: #428177;
+  --color-top-row: #054239;
+  --color-stripped-rows: #043832;
+  --color-hovered-row: #054239;
+  --color-table-outline: #3d3a3b;
+
+  --color-text: #ffffff;
+  --color-text-on-black: #edebe0;
+  --color-top-of-table-text: #ffffff;
+  --color-text-button: #ffffff;
+
+  --color-section: #0d1315;
+  --color-action: #428177;
+  --color-action-hover: #054239;
+  --color-outine: #313638;
+
+  --color-table-row: #1a1f22;
+  --color-logo: 200%;
+  --color-danger: #6b1f2a;
+  --color-danger-hover: #4a151e;
+  --color-input: #757575;
+}
