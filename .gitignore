@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+#others
+*.drawio
+*.bkp
+*dtmp
+*.xml
+*.postman_collection.json
