@@ -2,9 +2,11 @@ import { useAuthStore } from '../../stores/authStore';
 import ProfileDropdown from './ProfileDropdown';
 import styles from './header_and_footer.module.css';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
+import { useUIStore } from '../../stores/uiStore';
 
 export default function Header() {
   const user = useAuthStore(state => state.user);
+  const headerActions = useUIStore(state => state.headerActions);
 
   const institutionLabel = user?.institution?.name ? `${user.institution.name} institution` : '—';
   const sectionLabel = user?.section?.name ?? '';
@@ -20,7 +22,9 @@ export default function Header() {
           </div>
         </div>
 
-        <div className={styles.navigation_header_buttons} />
+        <div className={styles.navigation_header_buttons}>
+          {headerActions}
+        </div>
         <ProfileDropdown />
       </div>
     </header>
