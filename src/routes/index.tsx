@@ -12,6 +12,7 @@ import AuthProvider from '../providers/AuthProvider';
 import Forbidden from '../pages/shared/Forbidden';
 import SectionsList from '../pages/manager/Sections/SectionsList';
 import SectionDetails from '../pages/manager/Sections/SectionDetails';
+import EmployeesList from '../pages/manager/Employees/EmployeesList';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'sections', element: <SectionsList /> },
           { path: 'sections/:id', element: <SectionDetails /> },
-          { path: 'employees', element: <PlaceholderPage title="إدارة الموظفين (Manager)" /> },
+          { path: 'employees', element: <EmployeesList /> },
           { path: 'templates', element: <PlaceholderPage title="قوالب المعاملات (Manager)" /> },
           { path: 'requests/running', element: <PlaceholderPage title="الطلبات الجارية (Manager)" /> },
         ],

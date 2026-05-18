@@ -91,3 +91,20 @@ html.dark-theme, html.dark {
   --color-danger-hover: #4a151e;
   --color-input: #757575;
 }
+
+body {
+  background: var(--color-primary);
+}
+
+.dashboard-scale {
+  zoom: 0.8;
+}
+
+@supports not (zoom: 1) {
+  .dashboard-scale {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%;
+    min-height: 125vh;
+  }
+}

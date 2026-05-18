@@ -1,5 +1,6 @@
 import { api } from './api';
-import type { ApiResponse, Section, SectionListItem } from '../types/section.types';
+import type { ApiResponse } from '../types/api.types';
+import type { Section, SectionListItem } from '../types/section.types';
 
 export const sectionsService = {
   listManagerSections: async (params?: {

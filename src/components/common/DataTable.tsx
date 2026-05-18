@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styles from './DataTable.module.css';
 
 export type DataTableColumn<T> = {
-  header: string;
+  header: ReactNode;
   render: (row: T) => ReactNode;
   className?: string;
 };

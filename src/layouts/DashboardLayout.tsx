@@ -5,7 +5,7 @@ import Sidebar from '../components/layout/Sidebar';
 export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-[var(--color-primary)] text-[var(--color-text)]">
-      <div className="flex min-h-screen">
+      <div className="dashboard-scale flex min-h-screen">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
           <Header />
