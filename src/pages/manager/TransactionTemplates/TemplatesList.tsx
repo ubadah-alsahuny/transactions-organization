@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '../../../components/common/DataTable';
 import Modal from '../../../components/common/Modal';
 import { Toast } from '../../../components/common/Toast';
+import { ENV } from '../../../env';
 import TemplateForm from '../../../components/forms/TemplateForm';
 import sectionStyles from '../../../components/layout/section.module.css';
+import { institutionService } from '../../../services/institution.service';
 import { sectionsService } from '../../../services/sections.service';
 import { templatesService } from '../../../services/templates.service';
 import { useUIStore } from '../../../stores/uiStore';
+import type { InstitutionListItem } from '../../../types/institution.types';
 import type { SectionListItem } from '../../../types/section.types';
 import type { TransactionTemplateListItem } from '../../../types/template.types';
 import { formatDateTime } from '../../../utils/dateFormatter';
@@ -20,6 +23,7 @@ export default function TemplatesList() {
   const [isLoading, setIsLoading] = useState(true);
   const [templates, setTemplates] = useState<TransactionTemplateListItem[]>([]);
   const [sections, setSections] = useState<SectionListItem[]>([]);
+  const [institutions, setInstitutions] = useState<InstitutionListItem[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [toggleTarget, setToggleTarget] = useState<TransactionTemplateListItem | null>(null);
   const [isToggling, setIsToggling] = useState(false);
@@ -52,9 +56,23 @@ export default function TemplatesList() {
     }
   };
 
+  const fetchInstitutions = async () => {
+    try {
+      const response = await institutionService.listManagerInstitutions({ page: 1, limit: 20 });
+      if (response.success && response.data) {
+        setInstitutions(response.data.items);
+      } else if (response.error) {
+        Toast.error(response.error);
+      }
+    } catch (error: any) {
+      Toast.error(error.response?.data?.error ?? 'حدث خطأ أثناء جلب المؤسسات');
+    }
+  };
+
   useEffect(() => {
     fetchTemplates();
     fetchSections();
+    fetchInstitutions();
   }, []);
 
   useEffect(() => {
@@ -172,7 +190,9 @@ export default function TemplatesList() {
 
       <Modal open={isCreateOpen} title="إنشاء قالب معاملة جديد" onClose={() => setIsCreateOpen(false)}>
         <TemplateForm
-          sections={activeSections}
+          defaultInstitutionSections={activeSections}
+          institutions={institutions}
+          ownInstitutionId={localStorage.getItem(ENV.INSTITUTION_ID_KEY) ?? ''}
           submitLabel="إنشاء"
           onCancel={() => setIsCreateOpen(false)}
           onSubmit={createTemplate}
