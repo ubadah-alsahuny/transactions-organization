@@ -7,15 +7,39 @@ import { requestsService } from '../../services/requests.service';
 import type { EmployeeRequestDetailsResponse } from '../../types/request.types';
 import { formatDateTime } from '../../utils/dateFormatter';
 import { Button } from '../../components/common/Button';
+import { useAuthStore } from '../../stores/authStore';
+
+const DataDisplay = ({ data }: { data: Record<string, any> }) => {
+  if (!data || Object.keys(data).length === 0) return null;
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2" dir="ltr">
+      {Object.entries(data).map(([key, value]) => (
+        <div key={key} className="bg-[var(--color-section)] p-3 rounded-xl border border-[var(--color-outine)] flex flex-col items-start text-left">
+          <div className="text-xs text-[var(--color-sub-text)] mb-1 font-mono font-bold text-[var(--color-action)]">{key}</div>
+          <div className="text-sm font-medium break-words whitespace-pre-wrap text-[var(--color-text)]">
+            {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : typeof value === 'object' ? JSON.stringify(value) : String(value)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function EmployeeRequestDetails() {
   const { requestId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+  
+  const uuidPrefix = user?.id ? user.id.substring(0, 2).toUpperCase() : 'XX';
 
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [details, setDetails] = useState<EmployeeRequestDetailsResponse | null>(null);
-  const [customData, setCustomData] = useState<string>('{}');
+  
+  const [personalNote, setPersonalNote] = useState('');
+  const [legalNote, setLegalNote] = useState('');
+  const [showPersonal, setShowPersonal] = useState(false);
+  const [showLegal, setShowLegal] = useState(false);
 
   const fetchDetails = async () => {
     if (!requestId) return;
@@ -41,25 +65,26 @@ export default function EmployeeRequestDetails() {
   const handleProcess = async (status: 'approved' | 'rejected') => {
     if (!requestId) return;
     
-    let parsedData = undefined;
-    try {
-      parsedData = JSON.parse(customData);
-      if (typeof parsedData !== 'object' || Array.isArray(parsedData) || parsedData === null) {
-        throw new Error();
-      }
-    } catch (e) {
-      Toast.error('البيانات المرفقة يجب أن تكون بصيغة JSON صحيحة');
-      return;
+    const dataToSend: Record<string, any> = {};
+    if (showPersonal && personalNote.trim()) {
+      dataToSend[`${uuidPrefix}PersonalNote`] = personalNote.trim();
+    }
+    if (showLegal && legalNote.trim()) {
+      dataToSend[`${uuidPrefix}LegalNote`] = legalNote.trim();
     }
 
     setIsProcessing(true);
     try {
       const response = await requestsService.processEmployeeRequest(requestId, {
         status,
-        data: Object.keys(parsedData).length > 0 ? parsedData : undefined
+        data: Object.keys(dataToSend).length > 0 ? dataToSend : undefined
       });
       if (response.success) {
         Toast.success(status === 'approved' ? 'تم الموافقة على الخطوة' : 'تم رفض الخطوة');
+        setPersonalNote('');
+        setLegalNote('');
+        setShowPersonal(false);
+        setShowLegal(false);
         fetchDetails(); // refresh details
       } else {
         Toast.error(response.error ?? 'فشل في معالجة الطلب');
@@ -113,9 +138,7 @@ export default function EmployeeRequestDetails() {
           {details.request.intialData && Object.keys(details.request.intialData).length > 0 && (
              <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-lg font-bold mb-3">البيانات الأولية من المواطن</div>
-              <pre className="bg-[var(--color-section)] p-4 rounded-xl text-sm overflow-auto text-left" dir="ltr">
-                {JSON.stringify(details.request.intialData, null, 2)}
-              </pre>
+              <DataDisplay data={details.request.intialData} />
              </div>
           )}
 
@@ -136,9 +159,7 @@ export default function EmployeeRequestDetails() {
                        معالجة بواسطة: {step.employeeName} في {formatDateTime(step.processedAt)}
                      </div>
                      {step.data && Object.keys(step.data).length > 0 && (
-                       <pre className="bg-[var(--color-primary)] p-3 rounded-lg text-xs overflow-auto text-left" dir="ltr">
-                         {JSON.stringify(step.data, null, 2)}
-                       </pre>
+                       <DataDisplay data={step.data} />
                      )}
                    </div>
                  ))}
@@ -153,14 +174,47 @@ export default function EmployeeRequestDetails() {
             {details.requestStep.status === 'waiting' ? (
               <div className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-sm font-semibold mb-2">إضافة بيانات (JSON - اختياري)</label>
-                  <textarea
-                    value={customData}
-                    onChange={(e) => setCustomData(e.target.value)}
-                    className="w-full h-32 p-3 rounded-xl border border-[var(--color-outine)] bg-[var(--color-section)] text-left font-mono text-sm"
-                    dir="ltr"
-                    placeholder="{}"
-                  />
+                  <div className="block text-sm font-semibold mb-3">إضافة ملاحظات (اختياري)</div>
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowPersonal(!showPersonal)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors border ${showPersonal ? 'bg-[var(--color-action)] text-white border-[var(--color-action)]' : 'bg-transparent border-[var(--color-outine)] hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)]'}`}
+                    >
+                      {showPersonal ? '- إخفاء الملاحظة الشخصية' : '+ إضافة ملاحظة شخصية'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowLegal(!showLegal)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors border ${showLegal ? 'bg-[var(--color-action)] text-white border-[var(--color-action)]' : 'bg-transparent border-[var(--color-outine)] hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)]'}`}
+                    >
+                      {showLegal ? '- إخفاء الملاحظة القانونية' : '+ إضافة ملاحظة قانونية'}
+                    </button>
+                  </div>
+
+                  {showPersonal && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-semibold mb-2" dir="ltr">{uuidPrefix}PersonalNote</label>
+                      <textarea
+                        value={personalNote}
+                        onChange={(e) => setPersonalNote(e.target.value)}
+                        className="w-full h-24 p-3 rounded-xl border border-[var(--color-outine)] bg-[var(--color-section)] text-sm"
+                        placeholder="أضف ملاحظة شخصية هنا..."
+                      />
+                    </div>
+                  )}
+
+                  {showLegal && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-semibold mb-2" dir="ltr">{uuidPrefix}LegalNote</label>
+                      <textarea
+                        value={legalNote}
+                        onChange={(e) => setLegalNote(e.target.value)}
+                        className="w-full h-24 p-3 rounded-xl border border-[var(--color-outine)] bg-[var(--color-section)] text-sm"
+                        placeholder="أضف ملاحظة قانونية هنا..."
+                      />
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex gap-4 mt-2">
