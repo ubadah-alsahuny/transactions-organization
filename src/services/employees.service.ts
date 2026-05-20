@@ -7,6 +7,7 @@ import type {
   EmployeeRecord,
   FireEmployeeResponse,
   TransitionEmployeeResponse,
+  EmployeeProfile,
 } from '../types/employee.types';
 
 export const employeesService = {
@@ -32,6 +33,10 @@ export const employeesService = {
   },
   fireFromSection: async (payload: { employeeId: string }): Promise<ApiResponse<FireEmployeeResponse>> => {
     const response = await api.delete<ApiResponse<FireEmployeeResponse>>('/manager/employees/fire-from-section', { data: payload });
+    return response.data;
+  },
+  getEmployeeProfile: async (): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.get<ApiResponse<EmployeeProfile>>('/employee/me');
     return response.data;
   },
 };

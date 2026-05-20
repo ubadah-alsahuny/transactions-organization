@@ -13,4 +13,28 @@ export const requestsService = {
     });
     return response.data;
   },
+
+  listEmployeePendingRequests: async (params: {
+    page?: number;
+    limit?: number;
+    order?: 'ASC' | 'DESC';
+  }): Promise<ApiResponse<import('../types/request.types').EmployeePendingRequestsResponse>> => {
+    const response = await api.get('/employee/requests/pending', { params });
+    return response.data;
+  },
+
+  getEmployeeRequestDetails: async (
+    requestId: string
+  ): Promise<ApiResponse<import('../types/request.types').EmployeeRequestDetailsResponse>> => {
+    const response = await api.get(`/employee/requests/${requestId}`);
+    return response.data;
+  },
+
+  processEmployeeRequest: async (
+    requestId: string,
+    payload: import('../types/request.types').ProcessRequestPayload
+  ): Promise<ApiResponse<any>> => {
+    const response = await api.post(`/employee/requests/${requestId}/process`, payload);
+    return response.data;
+  },
 };

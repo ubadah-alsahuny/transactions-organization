@@ -58,3 +58,17 @@ export type FireEmployeeResponse = {
   previousSection: { id: string; name: string };
   message: string;
 };
+
+export type EmployeeProfile = {
+  id: string;
+  email: string;
+  role: string;
+  fullName: string;
+  institution: {
+    id: string;
+    name: string;
+  };
+  hiredAt: string;
+  isActive: boolean;
+  currentSectionsCount: number;
+};

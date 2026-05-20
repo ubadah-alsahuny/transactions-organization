@@ -2,6 +2,9 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import ManagerLogin from '../pages/manager/ManagerLogin';
 import CoManagerLogin from '../pages/co-manager/CoManagerLogin';
 import EmployeeLogin from '../pages/employee/EmployeeLogin';
+import EmployeePendingRequestsList from '../pages/employee/PendingRequestsList';
+import EmployeeRequestDetails from '../pages/employee/RequestDetails';
+import EmployeeMyProfile from '../pages/employee/MyProfile';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Landing from '../pages/shared/Landing';
@@ -85,8 +88,9 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: 'dashboard', element: <DashboardHome /> },
-      { path: 'requests/pending', element: <PlaceholderPage title="الطلبات المعلقة (Employee)" /> },
-      { path: 'profile', element: <PlaceholderPage title="حسابي (Employee)" /> },
+      { path: 'requests/pending', element: <EmployeePendingRequestsList /> },
+      { path: 'requests/:requestId', element: <EmployeeRequestDetails /> },
+      { path: 'profile', element: <EmployeeMyProfile /> },
     ],
   },
   {
