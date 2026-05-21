@@ -3,21 +3,31 @@ import { ArrowLeft, Check, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import sectionStyles from '../../components/layout/section.module.css';
 import { Toast } from '../../components/common/Toast';
+import Modal from '../../components/common/Modal';
 import { requestsService } from '../../services/requests.service';
 import type { EmployeeRequestDetailsResponse } from '../../types/request.types';
 import { formatDateTime } from '../../utils/dateFormatter';
-import { Button } from '../../components/common/Button';
 import { useAuthStore } from '../../stores/authStore';
 
-const DataDisplay = ({ data }: { data: Record<string, any> }) => {
+const DataCard = ({ data, title }: { data: Record<string, any>; title?: string }) => {
   if (!data || Object.keys(data).length === 0) return null;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2" dir="ltr">
+    <div className="flex flex-col gap-2 mt-2" dir="rtl">
+      {title && (
+        <div className="text-sm font-semibold text-[var(--color-sub-text)] border-b border-[var(--color-outine)] pb-1">
+          {title}
+        </div>
+      )}
       {Object.entries(data).map(([key, value]) => (
-        <div key={key} className="bg-[var(--color-section)] p-3 rounded-xl border border-[var(--color-outine)] flex flex-col items-start text-left">
-          <div className="text-xs text-[var(--color-sub-text)] mb-1 font-mono font-bold text-[var(--color-action)]">{key}</div>
+        <div
+          key={key}
+          className="bg-[var(--color-section)] p-3 rounded-xl border border-[var(--color-outine)] flex flex-col gap-1"
+        >
+          <div className="text-xs text-[var(--color-sub-text)] font-mono font-bold text-[var(--color-action)]">
+            {key}
+          </div>
           <div className="text-sm font-medium break-words whitespace-pre-wrap text-[var(--color-text)]">
-            {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : typeof value === 'object' ? JSON.stringify(value) : String(value)}
+            {typeof value === 'boolean' ? (value ? 'نعم' : 'لا') : typeof value === 'object' ? JSON.stringify(value) : String(value)}
           </div>
         </div>
       ))}
@@ -37,9 +47,10 @@ export default function EmployeeRequestDetails() {
   const [details, setDetails] = useState<EmployeeRequestDetailsResponse | null>(null);
   
   const [personalNote, setPersonalNote] = useState('');
-  const [legalNote, setLegalNote] = useState('');
+  const [legalParagraph, setLegalParagraph] = useState('');
   const [showPersonal, setShowPersonal] = useState(false);
   const [showLegal, setShowLegal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'approved' | 'rejected' | null>(null);
 
   const fetchDetails = async () => {
     if (!requestId) return;
@@ -69,8 +80,8 @@ export default function EmployeeRequestDetails() {
     if (showPersonal && personalNote.trim()) {
       dataToSend[`${uuidPrefix}PersonalNote`] = personalNote.trim();
     }
-    if (showLegal && legalNote.trim()) {
-      dataToSend[`${uuidPrefix}LegalNote`] = legalNote.trim();
+    if (showLegal && legalParagraph.trim()) {
+      dataToSend[`${uuidPrefix}LegalParagraph`] = legalParagraph.trim();
     }
 
     setIsProcessing(true);
@@ -82,10 +93,10 @@ export default function EmployeeRequestDetails() {
       if (response.success) {
         Toast.success(status === 'approved' ? 'تم الموافقة على الخطوة' : 'تم رفض الخطوة');
         setPersonalNote('');
-        setLegalNote('');
+        setLegalParagraph('');
         setShowPersonal(false);
         setShowLegal(false);
-        fetchDetails(); // refresh details
+        navigate('/employee/requests/pending');
       } else {
         Toast.error(response.error ?? 'فشل في معالجة الطلب');
       }
@@ -138,7 +149,7 @@ export default function EmployeeRequestDetails() {
           {details.request.intialData && Object.keys(details.request.intialData).length > 0 && (
              <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-lg font-bold mb-3">البيانات الأولية من المواطن</div>
-              <DataDisplay data={details.request.intialData} />
+              <DataCard data={details.request.intialData} />
              </div>
           )}
 
@@ -159,7 +170,7 @@ export default function EmployeeRequestDetails() {
                        معالجة بواسطة: {step.employeeName} في {formatDateTime(step.processedAt)}
                      </div>
                      {step.data && Object.keys(step.data).length > 0 && (
-                       <DataDisplay data={step.data} />
+                       <DataCard data={step.data} />
                      )}
                    </div>
                  ))}
@@ -206,10 +217,10 @@ export default function EmployeeRequestDetails() {
 
                   {showLegal && (
                     <div className="mb-4">
-                      <label className="block text-sm font-semibold mb-2" dir="ltr">{uuidPrefix}LegalNote</label>
+                      <label className="block text-sm font-semibold mb-2" dir="ltr">{uuidPrefix}LegalParagraph</label>
                       <textarea
-                        value={legalNote}
-                        onChange={(e) => setLegalNote(e.target.value)}
+                        value={legalParagraph}
+                        onChange={(e) => setLegalParagraph(e.target.value)}
                         className="w-full h-24 p-3 rounded-xl border border-[var(--color-outine)] bg-[var(--color-section)] text-sm"
                         placeholder="أضف ملاحظة قانونية هنا..."
                       />
@@ -218,22 +229,24 @@ export default function EmployeeRequestDetails() {
                 </div>
                 
                 <div className="flex gap-4 mt-2">
-                  <Button
-                    onClick={() => handleProcess('approved')}
-                    isLoading={isProcessing}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white flex justify-center items-center gap-2"
+                  <button
+                    type="button"
+                    onClick={() => setConfirmAction('approved')}
+                    disabled={isProcessing}
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-green-600 bg-transparent px-4 py-2 font-semibold text-green-600 hover:bg-green-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Check size={18} />
                     موافقة
-                  </Button>
-                  <Button
-                    onClick={() => handleProcess('rejected')}
-                    isLoading={isProcessing}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white flex justify-center items-center gap-2"
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmAction('rejected')}
+                    disabled={isProcessing}
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-red-600 bg-transparent px-4 py-2 font-semibold text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <X size={18} />
                     رفض
-                  </Button>
+                  </button>
                 </div>
               </div>
             ) : (
@@ -250,11 +263,56 @@ export default function EmployeeRequestDetails() {
               </div>
             )}
           </div>
-          
+
         </div>
       ) : (
         <div className="text-[var(--color-sub-text)]">الطلب غير موجود</div>
       )}
+
+      {/* Confirmation Modal */}
+      <Modal
+        open={confirmAction !== null}
+        title={confirmAction === 'approved' ? 'تأكيد الموافقة' : 'تأكيد الرفض'}
+        onClose={() => setConfirmAction(null)}
+        footer={
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setConfirmAction(null)}
+              className="px-4 py-2 rounded-xl border border-[var(--color-outine)] bg-transparent font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+            >
+              إلغاء
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (confirmAction) {
+                  handleProcess(confirmAction);
+                  setConfirmAction(null);
+                }
+              }}
+              disabled={isProcessing}
+              className={`px-4 py-2 rounded-xl font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                confirmAction === 'approved'
+                  ? 'bg-green-600 hover:bg-green-700'
+                  : 'bg-red-600 hover:bg-red-700'
+              }`}
+            >
+              {isProcessing
+                ? 'جارٍ المعالجة...'
+                : confirmAction === 'approved'
+                  ? 'تأكيد الموافقة'
+                  : 'تأكيد الرفض'}
+            </button>
+          </div>
+        }
+      >
+        <p className="text-[var(--color-text)]">
+          {confirmAction === 'approved'
+            ? 'هل أنت متأكد من الموافقة على هذه الخطوة؟'
+            : 'هل أنت متأكد من رفض هذه الخطوة؟'}
+        </p>
+      </Modal>
     </div>
   );
 }
