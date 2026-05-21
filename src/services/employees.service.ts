@@ -39,4 +39,16 @@ export const employeesService = {
     const response = await api.get<ApiResponse<EmployeeProfile>>('/employee/me');
     return response.data;
   },
+  assignToSectionCoManager: async (payload: { sectionId: string; employeeId: string }): Promise<ApiResponse<EmployeeRecord>> => {
+    const response = await api.post<ApiResponse<EmployeeRecord>>('/co-manager/employees/assign-to-section', payload);
+    return response.data;
+  },
+  listAllCoManagerEmployees: async (params: { page: number; limit: number }): Promise<ApiResponse<EmployeeListAllResponse>> => {
+    const response = await api.get<ApiResponse<EmployeeListAllResponse>>('/co-manager/employees/all', { params });
+    return response.data;
+  },
+  transitionToSectionCoManager: async (payload: { employeeId: string; sectionId: string }): Promise<ApiResponse<TransitionEmployeeResponse>> => {
+    const response = await api.put<ApiResponse<TransitionEmployeeResponse>>('/co-manager/employees/transition-to-section', payload);
+    return response.data;
+  },
 };

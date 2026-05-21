@@ -263,6 +263,11 @@ export default function EmployeesList() {
     {
       header: '',
       render: row => {
+        // Hide action buttons for employees whose name contains "manager" (case-insensitive)
+        if (row.full_name.toLowerCase().includes('manager')) {
+          return null;
+        }
+
         const isSelf = currentUser?.id === row.user_id;
         const canAct = row.is_active && !isSelf;
         const canAssign = canAct && row.section_id === null;

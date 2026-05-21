@@ -10,6 +10,13 @@ export const sectionsService = {
     const response = await api.get<ApiResponse<SectionListItem[]>>('/manager/sections', { params });
     return response.data;
   },
+  listCoManagerSections: async (params?: {
+    include_inactive?: boolean;
+    institution_id?: string;
+  }): Promise<ApiResponse<SectionListItem[]>> => {
+    const response = await api.get<ApiResponse<SectionListItem[]>>('/co-manager/sections', { params });
+    return response.data;
+  },
   getManagerSectionById: async (id: string): Promise<ApiResponse<Section>> => {
     const response = await api.get<ApiResponse<Section>>(`/manager/sections/${id}`);
     return response.data;

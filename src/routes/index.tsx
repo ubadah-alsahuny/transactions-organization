@@ -9,7 +9,6 @@ import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Landing from '../pages/shared/Landing';
 import NotFound from '../pages/shared/NotFound';
-import PlaceholderPage from '../pages/shared/PlaceholderPage';
 import DashboardHome from '../pages/shared/DashboardHome';
 import AuthProvider from '../providers/AuthProvider';
 import Forbidden from '../pages/shared/Forbidden';
@@ -20,6 +19,11 @@ import TemplatesList from '../pages/manager/TransactionTemplates/TemplatesList';
 import TemplateDetails from '../pages/manager/TransactionTemplates/TemplateDetails';
 import RunningRequestsList from '../pages/manager/Requests/RunningRequestsList';
 import RequestDetails from '../pages/manager/Requests/RequestDetails';
+import CoManagerSectionsList from '../pages/co-manager/Sections/SectionsList';
+import CoManagerEmployeesList from '../pages/co-manager/Employees/EmployeesList';
+import CoManagerIncomingRequestsList from '../pages/co-manager/Requests/IncomingRequestsList';
+import CoManagerSectionDetails from '../pages/co-manager/Sections/SectionDetails';
+import CoManagerRequestDetails from '../pages/co-manager/Requests/RequestDetails';
 
 const router = createBrowserRouter([
   {
@@ -70,9 +74,11 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
-          { path: 'sections', element: <PlaceholderPage title="عرض الأقسام (Co-Manager)" /> },
-          { path: 'employees', element: <PlaceholderPage title="إدارة الموظفين (Co-Manager)" /> },
-          { path: 'requests/running', element: <PlaceholderPage title="الطلبات الجارية (Co-Manager)" /> },
+          { path: 'sections', element: <CoManagerSectionsList /> },
+          { path: 'sections/:id', element: <CoManagerSectionDetails /> },
+          { path: 'employees', element: <CoManagerEmployeesList /> },
+          { path: 'requests/running', element: <CoManagerIncomingRequestsList /> },
+          { path: 'requests/running/:requestId', element: <CoManagerRequestDetails /> },
         ],
       },
     ],

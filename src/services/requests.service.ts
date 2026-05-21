@@ -13,6 +13,16 @@ export const requestsService = {
     });
     return response.data;
   },
+  listCoManagerRunningRequests: async (params: {
+    page: number;
+    limit: number;
+    order: 'ASC' | 'DESC';
+  }): Promise<ApiResponse<RunningRequestsResponse>> => {
+    const response = await api.get<ApiResponse<RunningRequestsResponse>>('/co-manager/requests/running', {
+      params,
+    });
+    return response.data;
+  },
 
   listEmployeePendingRequests: async (params: {
     page?: number;
