@@ -7,6 +7,7 @@ import Modal from '../../components/common/Modal';
 import { requestsService } from '../../services/requests.service';
 import type { EmployeeRequestDetailsResponse } from '../../types/request.types';
 import { formatDateTime } from '../../utils/dateFormatter';
+import { filterInitialData, filterStepOneData } from '../../utils/dataFilter';
 import { useAuthStore } from '../../stores/authStore';
 
 const DataCard = ({ data, title }: { data: Record<string, any>; title?: string }) => {
@@ -51,6 +52,7 @@ export default function EmployeeRequestDetails() {
   const [showPersonal, setShowPersonal] = useState(false);
   const [showLegal, setShowLegal] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'approved' | 'rejected' | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   const fetchDetails = async () => {
     if (!requestId) return;
@@ -75,13 +77,20 @@ export default function EmployeeRequestDetails() {
 
   const handleProcess = async (status: 'approved' | 'rejected') => {
     if (!requestId) return;
-    
+
     const dataToSend: Record<string, any> = {};
-    if (showPersonal && personalNote.trim()) {
-      dataToSend[`${uuidPrefix}PersonalNote`] = personalNote.trim();
+
+    if (status === 'approved') {
+      if (showPersonal && personalNote.trim()) {
+        dataToSend[`${uuidPrefix}PersonalNote`] = personalNote.trim();
+      }
+      if (showLegal && legalParagraph.trim()) {
+        dataToSend[`${uuidPrefix}LegalParagraph`] = legalParagraph.trim();
+      }
     }
-    if (showLegal && legalParagraph.trim()) {
-      dataToSend[`${uuidPrefix}LegalParagraph`] = legalParagraph.trim();
+
+    if (status === 'rejected' && rejectionReason.trim()) {
+      dataToSend.rejectionReason = rejectionReason.trim();
     }
 
     setIsProcessing(true);
@@ -96,6 +105,8 @@ export default function EmployeeRequestDetails() {
         setLegalParagraph('');
         setShowPersonal(false);
         setShowLegal(false);
+        setRejectionReason('');
+        setConfirmAction(null);
         navigate('/employee/requests/pending');
       } else {
         Toast.error(response.error ?? 'فشل في معالجة الطلب');
@@ -149,7 +160,7 @@ export default function EmployeeRequestDetails() {
           {details.request.intialData && Object.keys(details.request.intialData).length > 0 && (
              <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-lg font-bold mb-3">البيانات الأولية من المواطن</div>
-              <DataCard data={details.request.intialData} />
+              <DataCard data={filterInitialData(details.request.intialData)} />
              </div>
           )}
 
@@ -158,22 +169,27 @@ export default function EmployeeRequestDetails() {
              <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
                <div className="text-lg font-bold mb-4">الخطوات السابقة</div>
                <div className="flex flex-col gap-4">
-                 {details.previousSteps.map((step) => (
-                   <div key={step.id} className="border border-[var(--color-outine)] rounded-xl p-4 bg-[var(--color-section)]">
-                     <div className="flex justify-between mb-2">
-                       <span className="font-semibold">الخطوة {step.stepOrder} - {step.sectionName}</span>
-                       <span className={`text-sm px-2 py-1 rounded-full ${step.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                         {step.status}
-                       </span>
+                 {details.previousSteps.map((step) => {
+                   const stepData = step.stepOrder === 1
+                     ? filterStepOneData(step.data)
+                     : step.data;
+                   return (
+                     <div key={step.id} className="border border-[var(--color-outine)] rounded-xl p-4 bg-[var(--color-section)]">
+                       <div className="flex justify-between mb-2">
+                         <span className="font-semibold">الخطوة {step.stepOrder} - {step.sectionName}</span>
+                         <span className={`text-sm px-2 py-1 rounded-full ${step.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                           {step.status}
+                         </span>
+                       </div>
+                       <div className="text-sm text-[var(--color-sub-text)] mb-2">
+                         معالجة بواسطة: {step.employeeName} في {formatDateTime(step.processedAt)}
+                       </div>
+                       {stepData && Object.keys(stepData).length > 0 && (
+                         <DataCard data={stepData} />
+                       )}
                      </div>
-                     <div className="text-sm text-[var(--color-sub-text)] mb-2">
-                       معالجة بواسطة: {step.employeeName} في {formatDateTime(step.processedAt)}
-                     </div>
-                     {step.data && Object.keys(step.data).length > 0 && (
-                       <DataCard data={step.data} />
-                     )}
-                   </div>
-                 ))}
+                   );
+                 })}
                </div>
              </div>
           )}
@@ -288,10 +304,9 @@ export default function EmployeeRequestDetails() {
               onClick={() => {
                 if (confirmAction) {
                   handleProcess(confirmAction);
-                  setConfirmAction(null);
                 }
               }}
-              disabled={isProcessing}
+              disabled={isProcessing || (confirmAction === 'rejected' && !rejectionReason.trim())}
               className={`px-4 py-2 rounded-xl font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 confirmAction === 'approved'
                   ? 'bg-green-600 hover:bg-green-700'
@@ -307,11 +322,20 @@ export default function EmployeeRequestDetails() {
           </div>
         }
       >
-        <p className="text-[var(--color-text)]">
-          {confirmAction === 'approved'
-            ? 'هل أنت متأكد من الموافقة على هذه الخطوة؟'
-            : 'هل أنت متأكد من رفض هذه الخطوة؟'}
-        </p>
+        {confirmAction === 'rejected' ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-[var(--color-text)]">هل أنت متأكد من رفض هذه الخطوة؟</p>
+            <label className="block text-sm font-semibold mb-1">سبب الرفض *</label>
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              className="w-full h-24 p-3 rounded-xl border border-[var(--color-outine)] bg-[var(--color-primary)] text-sm"
+              placeholder="أدخل سبب الرفض هنا..."
+            />
+          </div>
+        ) : (
+          <p className="text-[var(--color-text)]">هل أنت متأكد من الموافقة على هذه الخطوة؟</p>
+        )}
       </Modal>
     </div>
   );
