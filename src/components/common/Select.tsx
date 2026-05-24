@@ -13,14 +13,16 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, options, placeholder, ...props }, ref) => {
     return (
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="mb-1 block text-sm font-semibold text-[var(--color-text)]">
           {label}
         </label>
         <select
           ref={ref}
           className={[
-            'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none dark:bg-gray-700 dark:text-white transition-colors',
-            error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500',
+            'w-full rounded-2xl border px-4 py-2 transition-colors focus:outline-none focus:ring-2 bg-[var(--color-primary)] text-[var(--color-text)]',
+            error
+              ? 'border-[var(--color-danger)] focus:ring-[var(--color-danger)]'
+              : 'border-[var(--color-outine)] focus:ring-[var(--color-action)]',
           ].join(' ')}
           {...props}
         >
@@ -31,7 +33,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}
       </div>
     );
   }

@@ -22,7 +22,7 @@ export default function Landing() {
         </header>
 
         <main className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
-          <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-8 shadow-[rgba(0,0,0,0.1)_0_0.27rem_0.7rem]">
+          <div className="animate-fade-in-up rounded-3xl border border-[var(--color-outine)] p-8 shadow-[rgba(0,0,0,0.2)_0_1rem_2rem] backdrop-blur-xl backdrop-saturate-180" style={{ background: 'color-mix(in srgb, var(--color-section), transparent 10%)' }}>
             <h1 className="text-3xl font-extrabold leading-tight">
               أتمتة المعاملات الحكومية باستخدام تقنية البلوك تشين
             </h1>
@@ -52,19 +52,19 @@ export default function Landing() {
           </div>
 
           <div className="grid gap-4">
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6">
+            <div className="hover-lift animate-fade-in-up rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6" style={{ animationDelay: '0.1s' }}>
               <div className="text-lg font-bold mb-1">أدوار المؤسسة</div>
               <div className="text-[var(--color-sub-text)]">
                 مدير، نائب مدير، وموظفون بصلاحيات منفصلة وطرق وصول محمية.
               </div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6">
+            <div className="hover-lift animate-fade-in-up rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6" style={{ animationDelay: '0.2s' }}>
               <div className="text-lg font-bold mb-1">الطلبات</div>
               <div className="text-[var(--color-sub-text)]">
                 تتبع المعاملات الجارية والطلبات الواردة وربطها بالأقسام داخلياً.
               </div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6">
+            <div className="hover-lift animate-fade-in-up rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-6" style={{ animationDelay: '0.3s' }}>
               <div className="text-lg font-bold mb-1">قوالب المعاملات</div>
               <div className="text-[var(--color-sub-text)]">
                 تعريف الخطوات والبيانات الأولية المطلوبة لضمان اكتمال المعاملة قبل المعالجة.

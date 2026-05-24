@@ -146,15 +146,15 @@ export default function SectionDetails() {
           <div className="text-[var(--color-sub-text)]">جارٍ التحميل...</div>
         ) : section ? (
           <>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-sm text-[var(--color-sub-text)]">الاسم</div>
               <div className="mt-1 font-bold">{section.name}</div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-sm text-[var(--color-sub-text)]">الوصف</div>
               <div className="mt-1 font-semibold">{section.description}</div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-sm text-[var(--color-sub-text)]">الحالة</div>
               <div className="mt-1 font-semibold">{section.is_active ? 'مفعّل' : 'معطّل'}</div>
             </div>

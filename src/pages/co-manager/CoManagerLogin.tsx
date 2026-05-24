@@ -44,41 +44,41 @@ export default function CoManagerLogin() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 w-full max-w-md">
-        <div className="flex justify-center mb-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-primary)] px-4">
+      <div className="w-full max-w-md rounded-3xl border border-[var(--color-outine)] bg-[var(--color-section)] p-8 shadow-[rgba(0,0,0,0.2)_0_1rem_2rem] backdrop-blur-xl backdrop-saturate-180">
+        <div className="mb-6 flex justify-center">
           <img
             src={logo}
             alt="Logo"
-            className="h-16 object-contain"
+            className="h-20 object-contain"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">Co-Manager Login</h2>
+        <h2 className="mb-6 text-center text-2xl font-bold text-[var(--color-text)]">تسجيل دخول نائب المدير</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            label="Email"
+            label="البريد الإلكتروني"
             type="email"
             {...register('email')}
             error={errors.email?.message}
-            placeholder="Enter your email"
+            placeholder="example@domain.com"
           />
           <Input
-            label="Password"
+            label="كلمة المرور"
             type="password"
             {...register('password')}
             error={errors.password?.message}
-            placeholder="Enter your password"
+            placeholder="******"
           />
           <div className="mt-6">
-            <Button type="submit" isLoading={isLoading}>Login</Button>
+            <Button type="submit" isLoading={isLoading}>تسجيل الدخول</Button>
           </div>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 flex flex-col gap-2">
-          <Link to="/login/manager" className="text-blue-600 hover:underline dark:text-blue-400">Login as Manager?</Link>
-          <Link to="/login/employee" className="text-blue-600 hover:underline dark:text-blue-400">Login as Employee?</Link>
+        <div className="mt-6 flex flex-col gap-2 text-center text-sm text-[var(--color-sub-text)]">
+          <Link to="/login/manager" className="font-semibold text-[var(--color-action)] hover:underline">تسجيل الدخول كمدير</Link>
+          <Link to="/login/employee" className="font-semibold text-[var(--color-action)] hover:underline">تسجيل الدخول كموظف</Link>
         </div>
       </div>
     </div>

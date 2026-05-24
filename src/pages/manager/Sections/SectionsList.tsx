@@ -113,7 +113,7 @@ export default function SectionsList() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="text-[var(--color-sub-text)]">
-          {isLoading ? 'جارٍ التحميل...' : `عدد الأقسام: ${sections.length}`}
+          {!isLoading && `عدد الأقسام: ${sections.length}`}
         </div>
         <label className="flex items-center gap-2 text-sm font-semibold">
           <input
@@ -127,7 +127,7 @@ export default function SectionsList() {
       </div>
 
       <div className="mt-5">
-        <DataTable columns={columns} rows={sections} rowKey={(r) => r.id} emptyText="لا توجد أقسام" />
+        <DataTable columns={columns} rows={sections} rowKey={(r) => r.id} emptyText="لا توجد أقسام" isLoading={isLoading} />
       </div>
 
       <Modal open={isModalOpen} title="إضافة قسم جديد" onClose={() => setIsModalOpen(false)}>

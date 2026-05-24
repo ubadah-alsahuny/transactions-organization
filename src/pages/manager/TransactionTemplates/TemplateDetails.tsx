@@ -214,15 +214,15 @@ export default function TemplateDetails() {
       ) : template ? (
         <div className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-sm text-[var(--color-sub-text)]">الاسم</div>
               <div className="mt-1 font-bold">{template.name}</div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-sm text-[var(--color-sub-text)]">الحالة</div>
               <div className="mt-1 font-semibold">{template.isActive ? 'ظاهر للعامة' : 'مخفي'}</div>
             </div>
-            <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5 md:col-span-2">
+            <div className="hover-lift rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5 md:col-span-2">
               <div className="text-sm text-[var(--color-sub-text)]">الوصف</div>
               <div className="mt-1 font-semibold">{template.description}</div>
             </div>

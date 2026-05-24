@@ -30,7 +30,7 @@ export default function Sidebar() {
           ];
 
   return (
-    <aside className="sticky top-0 h-screen w-[280px] shrink-0 border-r border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-6">
+    <aside className="sticky top-0 z-30 h-screen w-[280px] shrink-0 border-r border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-6 backdrop-blur-xl backdrop-saturate-180">
       <div className="flex items-center gap-3 px-2">
         <img src={logo} alt="Logo" className="h-10 w-10 object-contain" />
         <div className="min-w-0">

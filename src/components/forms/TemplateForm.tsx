@@ -173,17 +173,17 @@ export default function TemplateForm({
       />
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="mb-1 block text-sm font-semibold text-[var(--color-text)]">
           وصف القالب
         </label>
         <textarea
           rows={4}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          className="w-full rounded-2xl border border-[var(--color-outine)] bg-[var(--color-primary)] px-4 py-2 text-[var(--color-text)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-action)]"
           placeholder="وصف مختصر عن الهدف من القالب"
           {...register('description')}
         />
         {errors.description?.message ? (
-          <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
+          <p className="mt-1 text-sm text-[var(--color-danger)]">{errors.description.message}</p>
         ) : null}
       </div>
 

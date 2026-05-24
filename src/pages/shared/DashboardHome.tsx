@@ -34,11 +34,12 @@ export default function DashboardHome() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          {links.map(item => (
+          {links.map((item, i) => (
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-2xl bg-[var(--color-action)] px-5 py-3 font-semibold text-[var(--color-text-button)] hover:bg-[var(--color-action-hover)] transition-colors"
+              className="hover-lift rounded-2xl bg-[var(--color-action)] px-5 py-3 font-semibold text-[var(--color-text-button)] hover:bg-[var(--color-action-hover)] transition-colors"
+              style={{ animationDelay: `${i * 0.05}s` }}
             >
               {item.label}
             </Link>

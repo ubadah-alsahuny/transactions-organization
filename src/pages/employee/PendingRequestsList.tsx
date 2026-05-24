@@ -83,7 +83,7 @@ export default function PendingRequestsList() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="text-[var(--color-sub-text)]">
-          {isLoading ? 'جارٍ التحميل...' : `الإجمالي: ${pagination.total}`}
+          {!isLoading && `الإجمالي: ${pagination.total}`}
         </div>
         <div className="flex flex-wrap items-center gap-3 text-sm font-semibold">
           <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function PendingRequestsList() {
       </div>
 
       <div className="mt-5">
-        <DataTable columns={columns} rows={items} rowKey={(r) => r.id} emptyText="لا توجد طلبات معلقة" />
+        <DataTable columns={columns} rows={items} rowKey={(r) => r.id} emptyText="لا توجد طلبات معلقة" isLoading={isLoading} />
       </div>
 
       <Pagination page={pagination.page} totalPages={pagination.totalPages} onChange={pagination.setPage} />

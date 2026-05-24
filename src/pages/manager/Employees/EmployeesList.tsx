@@ -320,7 +320,7 @@ export default function EmployeesList() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="text-[var(--color-sub-text)]">
-          {isLoading ? 'جارٍ التحميل...' : `الإجمالي: ${pagination.total}`}
+          {!isLoading && `الإجمالي: ${pagination.total}`}
         </div>
         <div className="flex items-center gap-2 text-sm font-semibold">
           <span className="text-[var(--color-sub-text)]">عدد السجلات:</span>
@@ -339,7 +339,7 @@ export default function EmployeesList() {
       </div>
 
       <div className="mt-5">
-        <DataTable columns={columns} rows={employeesSorted} rowKey={(r) => r.user_id} emptyText="لا يوجد موظفون" />
+        <DataTable columns={columns} rows={employeesSorted} rowKey={(r) => r.user_id} emptyText="لا يوجد موظفون" isLoading={isLoading} />
       </div>
 
       <Pagination page={pagination.page} totalPages={pagination.totalPages} onChange={pagination.setPage} />

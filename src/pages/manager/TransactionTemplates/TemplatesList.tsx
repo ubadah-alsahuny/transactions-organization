@@ -181,11 +181,11 @@ export default function TemplatesList() {
       </div>
 
       <div className="text-[var(--color-sub-text)]">
-        {isLoading ? 'جارٍ التحميل...' : `عدد القوالب: ${templates.length}`}
+        {!isLoading && `عدد القوالب: ${templates.length}`}
       </div>
 
       <div className="mt-5">
-        <DataTable columns={columns} rows={templates} rowKey={row => row.id} emptyText="لا توجد قوالب معاملات" />
+        <DataTable columns={columns} rows={templates} rowKey={row => row.id} emptyText="لا توجد قوالب معاملات" isLoading={isLoading} />
       </div>
 
       <Modal open={isCreateOpen} title="إنشاء قالب معاملة جديد" onClose={() => setIsCreateOpen(false)}>
