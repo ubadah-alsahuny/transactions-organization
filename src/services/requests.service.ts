@@ -24,6 +24,30 @@ export const requestsService = {
     return response.data;
   },
 
+  listCoManagerPendingRequests: async (params: {
+    page?: number;
+    limit?: number;
+    order?: 'ASC' | 'DESC';
+  }): Promise<ApiResponse<import('../types/request.types').CoManagerPendingRequestsResponse>> => {
+    const response = await api.get('/co-manager/requests/pending', { params });
+    return response.data;
+  },
+
+  getCoManagerRequestDetails: async (
+    requestId: string
+  ): Promise<ApiResponse<import('../types/request.types').CoManagerRequestDetailsResponse>> => {
+    const response = await api.get(`/co-manager/requests/${requestId}`);
+    return response.data;
+  },
+
+  processCoManagerRequest: async (
+    requestId: string,
+    payload: import('../types/request.types').ProcessRequestPayload
+  ): Promise<ApiResponse<any>> => {
+    const response = await api.post(`/co-manager/requests/${requestId}/process`, payload);
+    return response.data;
+  },
+
   listEmployeePendingRequests: async (params: {
     page?: number;
     limit?: number;

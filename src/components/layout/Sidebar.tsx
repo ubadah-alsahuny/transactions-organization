@@ -1,4 +1,4 @@
-import { Building2, FileText, Home, Layers3, UserRound, Users } from 'lucide-react';
+import { Building2, FileText, History, Home, Layers3, UserRound, Users } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import SidebarItem from './SidebarItem';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
@@ -6,6 +6,7 @@ import logo from '../../assets/logos/Syrian_Government_Logo.svg';
 export default function Sidebar() {
   const user = useAuthStore(state => state.user);
   const role = user?.role;
+  const hasSection = Boolean(user?.section?.id);
 
   const items =
     role === 'manager'
@@ -15,13 +16,18 @@ export default function Sidebar() {
           { to: '/dashboard/manager/employees', label: 'الموظفون', icon: <Users size={18} /> },
           { to: '/dashboard/manager/templates', label: 'قوالب المعاملات', icon: <FileText size={18} /> },
           { to: '/dashboard/manager/requests/running', label: 'الطلبات الجارية', icon: <Building2 size={18} /> },
+          { to: '/dashboard/manager/requests/history', label: 'سجل الطلبات', icon: <History size={18} /> },
         ]
       : role === 'co_manager'
         ? [
             { to: '/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },
             { to: '/dashboard/co-manager/sections', label: 'الأقسام', icon: <Layers3 size={18} /> },
             { to: '/dashboard/co-manager/employees', label: 'الموظفون', icon: <Users size={18} /> },
+            ...(hasSection
+              ? [{ to: '/dashboard/co-manager/requests/pending', label: 'الطلبات المعلقة', icon: <Building2 size={18} /> }]
+              : []),
             { to: '/dashboard/co-manager/requests/running', label: 'الطلبات الجارية', icon: <Building2 size={18} /> },
+            { to: '/dashboard/co-manager/requests/history', label: 'سجل الطلبات', icon: <History size={18} /> },
           ]
         : [
             { to: '/employee/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },

@@ -1,4 +1,4 @@
-export type RequestStatus = 'in_progress' | 'completed' | 'rejected' | 'cancelled';
+export type RequestStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'cancelled';
 export type StepStatus = 'waiting' | 'in_progress' | 'completed' | 'rejected' | 'approved';
 
 export type RunningRequestCitizen = {
@@ -58,6 +58,9 @@ export type EmployeePendingRequestsResponse = {
   pagination: RequestsPagination;
 };
 
+export type CoManagerPendingRequestItem = EmployeePendingRequestItem;
+export type CoManagerPendingRequestsResponse = EmployeePendingRequestsResponse;
+
 export type RequestStepData = Record<string, any>;
 
 export type EmployeeRequestDetailsResponse = {
@@ -98,6 +101,8 @@ export type EmployeeRequestDetailsResponse = {
     processedAt: string | null;
   };
 };
+
+export type CoManagerRequestDetailsResponse = EmployeeRequestDetailsResponse;
 
 export type ProcessRequestPayload = {
   status: 'approved' | 'rejected';
