@@ -1,12 +1,15 @@
-import { Building2, FileText, History, Home, Layers3, UserRound, Users } from 'lucide-react';
+import { Building2, FileText, History, Home, KeyRound, Layers3, UserRound, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import SidebarItem from './SidebarItem';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
+import ChangePasswordModal from '../common/ChangePasswordModal';
 
 export default function Sidebar() {
   const user = useAuthStore(state => state.user);
   const role = user?.role;
   const hasSection = Boolean(user?.section?.id);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const items =
     role === 'manager'
@@ -36,7 +39,7 @@ export default function Sidebar() {
           ];
 
   return (
-    <aside className="sticky top-0 z-30 h-screen w-[280px] shrink-0 border-r border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-6 backdrop-blur-xl backdrop-saturate-180">
+    <aside className="sticky top-0 z-30 flex h-[calc(100vh/0.8)] w-[280px] shrink-0 flex-col border-r border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-6 backdrop-blur-xl backdrop-saturate-180">
       <div className="flex items-center gap-3 px-2">
         <img src={logo} alt="Logo" className="h-10 w-10 object-contain" />
         <div className="min-w-0">
@@ -45,13 +48,28 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <nav className="mt-8">
+      <nav className="mt-8 flex-1 overflow-y-auto pb-4">
         <ul className="flex flex-col gap-2">
           {items.map(item => (
             <SidebarItem key={item.to} to={item.to} label={item.label} icon={item.icon} />
           ))}
         </ul>
       </nav>
+
+      {(role === 'manager' || role === 'co_manager') && (
+        <div className="mt-4 border-t border-[var(--color-outine)] pt-4">
+          <button
+            type="button"
+            onClick={() => setShowChangePassword(true)}
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-right font-semibold text-[var(--color-text)] hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+          >
+            <KeyRound size={18} />
+            تغيير كلمة المرور
+          </button>
+        </div>
+      )}
+
+      <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />
     </aside>
   );
 }

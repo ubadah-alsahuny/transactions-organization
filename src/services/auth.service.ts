@@ -14,4 +14,18 @@ export const authService = {
     const response = await api.post<AuthResponse>('/employee/login', { email, password });
     return response.data;
   },
+  changePassword: async (
+    role: 'manager' | 'co_manager' | 'employee',
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Promise<void> => {
+    const pathMap = {
+      manager: '/manager/change-password',
+      co_manager: '/co-manager/change-password',
+      employee: '/employee/change-password',
+    };
+    const path = pathMap[role];
+    await api.patch(path, { oldPassword, newPassword, confirmPassword });
+  },
 };

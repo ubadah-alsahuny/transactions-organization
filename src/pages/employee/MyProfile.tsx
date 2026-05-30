@@ -4,10 +4,13 @@ import { Toast } from '../../components/common/Toast';
 import { employeesService } from '../../services/employees.service';
 import type { EmployeeProfile } from '../../types/employee.types';
 import { formatDateTime } from '../../utils/dateFormatter';
+import ChangePasswordModal from '../../components/common/ChangePasswordModal';
+import { KeyRound } from 'lucide-react';
 
 export default function MyProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [profile, setProfile] = useState<EmployeeProfile | null>(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -34,6 +37,17 @@ export default function MyProfile() {
       <div className={sectionStyles.titleContainer}>
         <div className={sectionStyles.sectionTitle}>حسابي (الملف الشخصي)</div>
         <div className={sectionStyles.line} />
+      </div>
+
+      <div className="mb-6 flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowChangePassword(true)}
+          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+        >
+          <KeyRound size={18} />
+          تغيير كلمة المرور
+        </button>
       </div>
 
       {isLoading ? (
@@ -77,6 +91,8 @@ export default function MyProfile() {
       ) : (
         <div className="text-[var(--color-sub-text)]">لم يتم العثور على بيانات الملف الشخصي</div>
       )}
+
+      <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />
     </div>
   );
 }
