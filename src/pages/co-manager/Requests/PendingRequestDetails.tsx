@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Check, X } from 'lucide-react';
+import { ArrowLeft, Check, X, Printer } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import sectionStyles from '../../../components/layout/section.module.css';
 import { Toast } from '../../../components/common/Toast';
@@ -135,10 +135,19 @@ export default function PendingRequestDetails() {
         <button
           type="button"
           onClick={() => navigate('/dashboard/co-manager/requests/pending')}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
           العودة للقائمة
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.open(`/print/request/${requestId}`, '_blank')}
+          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] text-[var(--color-action)] transition-colors cursor-pointer"
+        >
+          <Printer size={16} />
+          طباعة المعاملة
         </button>
       </div>
 

@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Printer } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DataCard from '../../../components/common/DataCard';
@@ -44,14 +44,23 @@ export default function RequestHistoryDetails() {
         <div className={sectionStyles.line} />
       </div>
 
-      <div className="mb-5">
+      <div className="mb-5 flex justify-between items-center">
         <button
           type="button"
           onClick={() => navigate('/dashboard/manager/requests/history')}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
           العودة للقائمة
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.open(`/print/request/${requestId}`, '_blank')}
+          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] text-[var(--color-action)] transition-colors cursor-pointer"
+        >
+          <Printer size={16} />
+          طباعة المعاملة
         </button>
       </div>
 
