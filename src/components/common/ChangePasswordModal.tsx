@@ -8,7 +8,6 @@ import Modal from './Modal';
 import { Input } from './Input';
 import { Button } from './Button';
 import { Toast } from './Toast';
-import { useNavigate } from 'react-router-dom';
 
 interface ChangePasswordModalProps {
   open: boolean;
@@ -19,7 +18,6 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
   const [isLoading, setIsLoading] = useState(false);
   const user = useAuthStore(state => state.user);
   const logout = useAuthStore(state => state.logout);
-  const navigate = useNavigate();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),

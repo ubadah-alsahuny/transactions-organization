@@ -1,20 +1,18 @@
-import { Building2, FileText, History, Home, KeyRound, Layers3, UserRound, Users } from 'lucide-react';
-import { useState } from 'react';
+import { Building2, FileText, History, Home,  Layers3, UserRound, Users } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import SidebarItem from './SidebarItem';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
-import ChangePasswordModal from '../common/ChangePasswordModal';
 
 export default function Sidebar() {
   const user = useAuthStore(state => state.user);
   const role = user?.role;
   const hasSection = Boolean(user?.section?.id);
-  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const items =
     role === 'manager'
       ? [
           { to: '/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },
+          { to: '/dashboard/manager/profile', label: 'حسابي', icon: <UserRound size={18} /> },
           { to: '/dashboard/manager/sections', label: 'الأقسام', icon: <Layers3 size={18} /> },
           { to: '/dashboard/manager/employees', label: 'الموظفون', icon: <Users size={18} /> },
           { to: '/dashboard/manager/templates', label: 'قوالب المعاملات', icon: <FileText size={18} /> },
@@ -24,6 +22,7 @@ export default function Sidebar() {
       : role === 'co_manager'
         ? [
             { to: '/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },
+            { to: '/dashboard/co-manager/profile', label: 'حسابي', icon: <UserRound size={18} /> },
             { to: '/dashboard/co-manager/sections', label: 'الأقسام', icon: <Layers3 size={18} /> },
             { to: '/dashboard/co-manager/employees', label: 'الموظفون', icon: <Users size={18} /> },
             ...(hasSection
@@ -56,20 +55,7 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {(role === 'manager' || role === 'co_manager') && (
-        <div className="mt-4 border-t border-[var(--color-outine)] pt-4">
-          <button
-            type="button"
-            onClick={() => setShowChangePassword(true)}
-            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-right font-semibold text-[var(--color-text)] hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
-          >
-            <KeyRound size={18} />
-            تغيير كلمة المرور
-          </button>
-        </div>
-      )}
 
-      <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />
     </aside>
   );
 }

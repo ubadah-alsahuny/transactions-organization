@@ -21,6 +21,7 @@ import RunningRequestsList from '../pages/manager/Requests/RunningRequestsList';
 import RequestDetails from '../pages/manager/Requests/RequestDetails';
 import ManagerRequestHistoryList from '../pages/manager/Requests/RequestHistoryList';
 import ManagerRequestHistoryDetails from '../pages/manager/Requests/RequestHistoryDetails';
+import ManagerMyProfile from '../pages/manager/MyProfile';
 import CoManagerSectionsList from '../pages/co-manager/Sections/SectionsList';
 import CoManagerEmployeesList from '../pages/co-manager/Employees/EmployeesList';
 import CoManagerIncomingRequestsList from '../pages/co-manager/Requests/IncomingRequestsList';
@@ -32,6 +33,7 @@ import CoManagerRequestHistoryList from '../pages/co-manager/Requests/RequestHis
 import CoManagerRequestHistoryDetails from '../pages/co-manager/Requests/RequestHistoryDetails';
 import PrintRequest from '../pages/shared/PDF feature/PrintRequest.tsx';
 
+import CoManagerMyProfile from '../pages/co-manager/MyProfile';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +67,7 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
+          { path: 'profile', element: <ManagerMyProfile /> },
           { path: 'sections', element: <SectionsList /> },
           { path: 'sections/:id', element: <SectionDetails /> },
           { path: 'employees', element: <EmployeesList /> },
@@ -84,6 +87,7 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
+          { path: 'profile', element: <CoManagerMyProfile /> },
           { path: 'sections', element: <CoManagerSectionsList /> },
           { path: 'sections/:id', element: <CoManagerSectionDetails /> },
           { path: 'employees', element: <CoManagerEmployeesList /> },

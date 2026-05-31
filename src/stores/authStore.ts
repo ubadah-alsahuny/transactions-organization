@@ -6,6 +6,7 @@ interface AuthState {
   token: string | null;
   user: User | null;
   login: (userData: User) => void;
+  updateUser: (patch: Partial<User>) => void;
   logout: () => void;
   hydrate: () => void;
   isManager: () => boolean;
@@ -33,6 +34,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (userData.section?.id) localStorage.setItem(ENV.SECTION_ID_KEY, userData.section.id);
     if (userData.section?.name) localStorage.setItem(ENV.SECTION_NAME_KEY, userData.section.name);
     set({ token: userData.token, user: userData });
+  },
+  updateUser: (patch: Partial<User>) => {
+    const current = get().user;
+    if (!current) return;
+    const next = { ...current, ...patch };
+    localStorage.setItem(ENV.USER_KEY, JSON.stringify(next));
+    set({ user: next });
   },
   logout: () => {
     localStorage.removeItem(ENV.TOKEN_KEY);

@@ -70,5 +70,10 @@ export type EmployeeProfile = {
   };
   hiredAt: string;
   isActive: boolean;
-  currentSectionsCount: number;
+  currentSectionsCount?: number;
+};
+
+export type ProfileUpdatePayload = {
+  email?: string;
+  fullName?: string;
 };

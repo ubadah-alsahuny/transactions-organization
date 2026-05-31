@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { useEffect, useState  } from 'react';
+import { Pencil , KeyRound } from 'lucide-react';
 import sectionStyles from '../../components/layout/section.module.css';
 import { Toast } from '../../components/common/Toast';
 import Modal from '../../components/common/Modal';
@@ -9,60 +9,73 @@ import type { EmployeeProfile } from '../../types/employee.types';
 import { formatDateTime } from '../../utils/dateFormatter';
 import { useUIStore } from '../../stores/uiStore';
 import { useAuthStore } from '../../stores/authStore';
-import ChangePasswordModal from '../../components/common/ChangePasswordModal';
-import { KeyRound } from 'lucide-react';
+import ChangePasswordModal from "../../components/common/ChangePasswordModal.tsx";
 
 export default function MyProfile() {
   const setHeaderActions = useUIStore(state => state.setHeaderActions);
   const updateUser = useAuthStore(state => state.updateUser);
+
   const [isLoading, setIsLoading] = useState(true);
   const [profile, setProfile] = useState<EmployeeProfile | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setIsLoading(true);
-      try {
-        const response = await employeesService.getEmployeeProfile();
-        if (response.success && response.data) {
-          setProfile(response.data);
-        } else {
-          Toast.error(response.error ?? 'فشل في جلب بيانات الملف الشخصي');
-        }
-      } catch (error: any) {
-        Toast.error(error.response?.data?.error ?? 'حدث خطأ أثناء جلب البيانات');
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
+  const fetchProfile = async () => {
+    setIsLoading(true);
+    try {
+      const response = await employeesService.getCoManagerProfile();
+      if (response.success && response.data) {
+        setProfile(response.data);
+      } else {
+        Toast.error(response.error ?? 'فشل في جلب بيانات الملف الشخصي');
+      }
+    } catch (error: any) {
+      Toast.error(error.response?.data?.error ?? 'حدث خطأ أثناء جلب البيانات');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, []);
 
   useEffect(() => {
     setHeaderActions(
-      <button
+        <div>
+        <button
+            type="button"
+            onClick={() => setIsEditOpen(true)}
+            className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-[var(--color-text-button)] hover:bg-[var(--color-action-hover)] transition-colors m-2"
+        >
+          <Pencil size={18}/>
+          تعديل البيانات
+        </button>
+
+    <button
         type="button"
-        onClick={() => setIsEditOpen(true)}
+        onClick={() => setShowChangePassword(true)}
         className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-[var(--color-text-button)] hover:bg-[var(--color-action-hover)] transition-colors"
-      >
-        <Pencil size={18} />
-        تعديل البيانات
-      </button>
-    );
+    >
+      <KeyRound size={18}/>
+      تغيير كلمة المرور
+    </button>
+        </div>
+  )
+    ;
     return () => setHeaderActions(null);
   }, [setHeaderActions]);
 
   const handleUpdate = async (data: { email?: string; fullName?: string }) => {
     try {
-      const response = await employeesService.updateEmployeeProfile(data);
+      const response = await employeesService.updateCoManagerProfile(data);
       if (response.success) {
         if (data.email) updateUser({ email: data.email });
         Toast.success('تم تحديث البيانات بنجاح');
         setIsEditOpen(false);
-        const refreshed = await employeesService.getEmployeeProfile();
-        if (refreshed.success && refreshed.data) setProfile(refreshed.data);
+        await fetchProfile();
       } else {
         Toast.error(response.error ?? 'فشل في تحديث البيانات');
       }
@@ -78,17 +91,6 @@ export default function MyProfile() {
         <div className={sectionStyles.line} />
       </div>
 
-      <div className="mb-6 flex justify-end">
-        <button
-          type="button"
-          onClick={() => setShowChangePassword(true)}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
-        >
-          <KeyRound size={18} />
-          تغيير كلمة المرور
-        </button>
-      </div>
-
       {isLoading ? (
         <div className="text-[var(--color-sub-text)]">جارٍ التحميل...</div>
       ) : profile ? (
@@ -97,7 +99,7 @@ export default function MyProfile() {
             <div className="text-sm text-[var(--color-sub-text)]">الاسم الكامل</div>
             <div className="mt-1 font-bold text-lg">{profile.fullName}</div>
           </div>
-          
+
           <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
             <div className="text-sm text-[var(--color-sub-text)]">البريد الإلكتروني</div>
             <div className="mt-1 font-semibold">{profile.email}</div>
@@ -121,7 +123,11 @@ export default function MyProfile() {
           <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
             <div className="text-sm text-[var(--color-sub-text)]">حالة الحساب</div>
             <div className="mt-1">
-              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${profile.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                  profile.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}
+              >
                 {profile.isActive ? 'نشط' : 'غير نشط'}
               </span>
             </div>
@@ -141,6 +147,8 @@ export default function MyProfile() {
       </Modal>
 
       <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />
+
     </div>
   );
 }
+

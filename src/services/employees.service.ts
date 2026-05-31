@@ -8,6 +8,7 @@ import type {
   FireEmployeeResponse,
   TransitionEmployeeResponse,
   EmployeeProfile,
+  ProfileUpdatePayload,
 } from '../types/employee.types';
 
 export const employeesService = {
@@ -37,6 +38,26 @@ export const employeesService = {
   },
   getEmployeeProfile: async (): Promise<ApiResponse<EmployeeProfile>> => {
     const response = await api.get<ApiResponse<EmployeeProfile>>('/employee/me');
+    return response.data;
+  },
+  updateEmployeeProfile: async (payload: ProfileUpdatePayload): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.put<ApiResponse<EmployeeProfile>>('/employee/profile', payload);
+    return response.data;
+  },
+  getManagerProfile: async (): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.get<ApiResponse<EmployeeProfile>>('/manager/profile');
+    return response.data;
+  },
+  updateManagerProfile: async (payload: ProfileUpdatePayload): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.put<ApiResponse<EmployeeProfile>>('/manager/profile', payload);
+    return response.data;
+  },
+  getCoManagerProfile: async (): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.get<ApiResponse<EmployeeProfile>>('/co-manager/profile');
+    return response.data;
+  },
+  updateCoManagerProfile: async (payload: ProfileUpdatePayload): Promise<ApiResponse<EmployeeProfile>> => {
+    const response = await api.put<ApiResponse<EmployeeProfile>>('/co-manager/profile', payload);
     return response.data;
   },
   assignToSectionCoManager: async (payload: { sectionId: string; employeeId: string }): Promise<ApiResponse<EmployeeRecord>> => {
