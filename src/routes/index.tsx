@@ -31,7 +31,7 @@ import CoManagerPendingRequestsList from '../pages/co-manager/Requests/PendingRe
 import CoManagerPendingRequestDetails from '../pages/co-manager/Requests/PendingRequestDetails';
 import CoManagerRequestHistoryList from '../pages/co-manager/Requests/RequestHistoryList';
 import CoManagerRequestHistoryDetails from '../pages/co-manager/Requests/RequestHistoryDetails';
-import PrintRequest from '../pages/shared/PDF feature/PrintRequest.tsx';
+
 
 import CoManagerMyProfile from '../pages/co-manager/MyProfile';
 
@@ -117,10 +117,7 @@ const router = createBrowserRouter([
       { path: 'profile', element: <EmployeeMyProfile /> },
     ],
   },
-  {
-    path: '/print/request/:requestId',
-    element: <PrintRequest />,
-  },
+
   {
     path: '/403',
     element: <Forbidden />,

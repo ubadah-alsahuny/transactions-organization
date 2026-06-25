@@ -1,0 +1,152 @@
+/* File: src/styles/print.css */
+
+/* ===== Print Styles ===== */
+@media print {
+  /* Reset body for print */
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh;
+  }
+
+  /* Document container */
+  .document-container {
+    width: 100% !important;
+    min-height: 100vh !important;
+    padding: 15mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    background: white !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ensure all content is visible */
+  .static-layer,
+  .dynamic-layer {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  /* Security layer - keep visible but very light */
+  .security-layer {
+    opacity: 1 !important;
+  }
+
+  /* Hide interactive elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Tables - ensure borders print */
+  .info-table td {
+    border-bottom: 1px solid #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .info-table .label {
+    background: #f8f9fa !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Keep colors in print */
+  .header-text .republic-name {
+    color: #1a237e !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .section-title {
+    color: #1a237e !important;
+    border-bottom-color: #e3f2fd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .note-item {
+    background: #f5f7fa !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .stamp-image {
+    border: 2px solid #ddd !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* QR code placeholder */
+  .qr-placeholder {
+    border: 2px dashed #ccc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure page breaks don't cut content */
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .signature-block {
+    page-break-inside: avoid;
+  }
+
+  /* Footer */
+  .document-footer {
+    border-top-color: #eee !important;
+  }
+
+  /* Header divider */
+  .header-divider {
+    border-bottom-color: #1a237e !important;
+  }
+
+  /* Fix for RTL in print */
+  * {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+
+  /* Override LTR for specific elements if needed */
+  .ltr,
+  .ltr * {
+    direction: ltr !important;
+    text-align: left !important;
+  }
+}
+
+/* ===== Print Preview Fixes ===== */
+@media print and (orientation: portrait) {
+  .document-container {
+    padding: 12mm !important;
+  }
+}
+
+@media print and (orientation: landscape) {
+  .document-container {
+    padding: 10mm !important;
+  }
+}
+
+/* ===== Screen Print Button ===== */
+.print-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #1a237e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.print-button:hover {
+  background: #0d47a1;
+}
+
+.print-button:active {
+  transform: scale(0.98);
+}

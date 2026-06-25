@@ -6,6 +6,7 @@ import RequestHistoryTimeline from '../../../components/common/RequestHistoryTim
 import { Toast } from '../../../components/common/Toast';
 import sectionStyles from '../../../components/layout/section.module.css';
 import { requestHistoryService } from '../../../services/requestHistory.service';
+import { DocumentLibrary } from '../../../packages/document-generator/src/index.js';
 import type { RequestHistoryDetailsResponse } from '../../../types/requestHistory.types';
 import { formatDateTime } from '../../../utils/dateFormatter';
 
@@ -37,6 +38,54 @@ export default function RequestHistoryDetails() {
     fetchDetails();
   }, [requestId]);
 
+  const handlePrintDocument = () => {
+    if (!details) return;
+
+    const hash = '0x' + details.request.id.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+
+    try {
+      const lib = DocumentLibrary.getInstance({ primaryColor: '#154239' });
+
+      const doc = lib.createDocument({
+        citizen: {
+          name: details.citizen.name,
+          nationalId: details.citizen.nationalId,
+        },
+        request: {
+          id: details.request.id,
+          transactionName: details.transaction.name,
+          status: details.request.status,
+          createdAt: details.request.createdAt,
+          updatedAt: details.request.updatedAt,
+        },
+        institution: {
+          name: details.steps[0]?.institutionName || '',
+        },
+        intialData: details.cumulativeData,
+        stepData: details.steps.map(step => ({
+          stepOrder: step.stepOrder,
+          sectionName: step.sectionName,
+          sectionId: step.sectionId || step.id,
+          status: step.status === 'approved' ? 'completed' : step.status,
+          employeeName: step.processor.name,
+          employeeId: step.processor.email,
+          processedAt: step.processedAt,
+          data: step.data,
+        })),
+        signature: {
+          name: details.steps[details.steps.length - 1]?.processor?.name || '',
+          title: details.steps[details.steps.length - 1]?.processor?.role || '',
+          date: details.steps[details.steps.length - 1]?.processedAt || '',
+        },
+        dataHash: hash,
+      });
+
+      doc.preview();
+    } catch {
+      Toast.error('حدث خطأ أثناء إنشاء المستند');
+    }
+  };
+
   return (
     <div className={sectionStyles.section}>
       <div className={sectionStyles.titleContainer}>
@@ -44,7 +93,7 @@ export default function RequestHistoryDetails() {
         <div className={sectionStyles.line} />
       </div>
 
-      <div className="mb-5 flex justify-between items-center">
+      <div className="mb-5 flex items-center justify-between">
         <button
           type="button"
           onClick={() => navigate('/dashboard/co-manager/requests/history')}
@@ -54,14 +103,16 @@ export default function RequestHistoryDetails() {
           العودة للقائمة
         </button>
 
-        <button
-          type="button"
-          onClick={() => window.open(`/print/request/${requestId}`, '_blank')}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] text-[var(--color-action)] transition-colors cursor-pointer"
-        >
-          <Printer size={16} />
-          طباعة المعاملة
-        </button>
+        {details?.request.status === 'completed' && (
+          <button
+            type="button"
+            onClick={handlePrintDocument}
+            className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
+          >
+            <Printer size={16} />
+            طباعة المستند
+          </button>
+        )}
       </div>
 
       {isLoading ? (

@@ -1,0 +1,28 @@
+{
+  "name": "@local/document-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official document generator with security layers for Syrian Arab Republic",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./styles": "./src/styles/index.js"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
+    "qrcode": "^1.5.4"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "document-generator",
+    "official-documents",
+    "security-layer",
+    "syria",
+    "pdf-export"
+  ],
+  "license": "MIT"
+}

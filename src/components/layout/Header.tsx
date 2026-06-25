@@ -1,5 +1,6 @@
 import { useAuthStore } from '../../stores/authStore';
 import ProfileDropdown from './ProfileDropdown';
+import { Bell } from 'lucide-react';
 import styles from './header_and_footer.module.css';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
 import { useUIStore } from '../../stores/uiStore';
@@ -24,6 +25,10 @@ export default function Header() {
 
         <div className={styles.navigation_header_buttons}>
           {headerActions}
+        </div>
+        <div className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-3 py-2">
+          <Bell size={20} />
+          <span className="hidden sm:inline">الإشعارات</span>
         </div>
         <ProfileDropdown />
       </div>

@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import sectionStyles from '../../../components/layout/section.module.css';
 import { Toast } from '../../../components/common/Toast';
 import { requestsService } from '../../../services/requests.service';
+import { DocumentLibrary } from '../../../packages/document-generator/src/index.js';
 import type { RunningRequestItem } from '../../../types/request.types';
 import { formatDateTime } from '../../../utils/dateFormatter';
 
@@ -44,6 +45,35 @@ export default function RequestDetails() {
     fallbackFetch();
   }, [request, requestId]);
 
+  const handlePrintDocument = () => {
+    if (!request) return;
+
+    const hash = '0x' + request.requestId.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+
+    try {
+      const lib = DocumentLibrary.getInstance({
+        primaryColor: '#154239',
+      });
+
+      const doc = lib.createDocument({
+        citizen: { id: request.citizen.id, name: request.citizen.name },
+        request: {
+          requestId: request.requestId,
+          transactionName: request.transactionName,
+          requestStatus: request.requestStatus,
+          createdAt: request.createdAt,
+          updatedAt: request.updatedAt,
+        },
+        institution: { id: '', name: '' },
+        dataHash: hash,
+      });
+
+      doc.preview();
+    } catch {
+      Toast.error('حدث خطأ أثناء إنشاء المستند');
+    }
+  };
+
   return (
     <div className={sectionStyles.section}>
       <div className={sectionStyles.titleContainer}>
@@ -51,7 +81,7 @@ export default function RequestDetails() {
         <div className={sectionStyles.line} />
       </div>
 
-      <div className="mb-5 flex justify-between items-center">
+      <div className="mb-5 flex items-center justify-between">
         <button
           type="button"
           onClick={() => navigate('/dashboard/manager/requests/running')}
@@ -61,14 +91,16 @@ export default function RequestDetails() {
           العودة للقائمة
         </button>
 
-        <button
-          type="button"
-          onClick={() => window.open(`/print/request/${requestId}`, '_blank')}
-          className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] text-[var(--color-action)] transition-colors cursor-pointer"
-        >
-          <Printer size={16} />
-          طباعة المعاملة
-        </button>
+        {request?.requestStatus === 'completed' && (
+          <button
+            type="button"
+            onClick={handlePrintDocument}
+            className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
+          >
+            <Printer size={16} />
+            طباعة المستند
+          </button>
+        )}
       </div>
 
       {isLoading ? (
