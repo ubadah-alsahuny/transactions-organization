@@ -5,7 +5,7 @@ import { constants } from '../utils/constants';
 const DOCUMENT_CSS = `
 .document-container {
   direction: rtl;
-  font-family: 'Traditional Arabic', 'Arial', sans-serif;
+  font-family: "Qomra", "GE SS Two", "Noto Naskh Arabic", "Trajan Pro", "Noto Sans", sans-serif;
   color: #1a1a1a;
   background: white;
   position: relative;
@@ -232,6 +232,7 @@ export class Document {
    */
   constructor(data) {
     this.securityLayer = data.securityLayer;
+    this.guillocheLayer = data.guillocheLayer;
     this.staticLayer = data.staticLayer;
     this.dynamicLayer = data.dynamicLayer;
     this.metadata = data.metadata || {};
@@ -251,6 +252,9 @@ export class Document {
     const { primaryColor = '#1a3a5c', fontFamily = 'Traditional Arabic, Arial, sans-serif' } = this.styles;
 
     const securityHTML = this.securityLayer.renderSVG(PAGE_WIDTH, PAGE_HEIGHT);
+    const guillocheHTML = this.guillocheLayer
+      ? this.guillocheLayer.renderSVG(PAGE_WIDTH)
+      : '';
     const staticHTML = this.staticLayer.render();
     const dynamicHTML = this.dynamicLayer.render();
 
@@ -288,6 +292,16 @@ body {
   width: 100%; height: 100%;
   pointer-events: none; z-index: 0;
 }
+.guilloche-layer {
+  position: absolute;
+  top: -2mm;
+  left: 0;
+  width: 100%;
+  height: 80mm;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
 .static-layer, .dynamic-layer { position: relative; z-index: 1; }
 @media print {
   body { background: white; margin: 0; padding: 0; }
@@ -303,6 +317,7 @@ body {
 <body>
 <div class="document-container" data-document-id="${this.metadata.id || ''}">
   <div class="security-layer">${securityHTML}</div>
+  ${guillocheHTML ? '<div class="guilloche-layer">' + guillocheHTML + '</div>' : ''}
   <div class="static-layer">${staticHTML}</div>
   <div class="dynamic-layer">${dynamicHTML}</div>
   <div class="document-footer">

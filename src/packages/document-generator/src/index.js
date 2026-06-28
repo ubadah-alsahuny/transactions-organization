@@ -4,6 +4,7 @@ import { DocumentLibrary } from './core/DocumentLibrary';
 import { DocumentBuilder } from './core/DocumentBuilder';
 import { Document } from './core/Document';
 import { SecurityLayer } from './layers/SecurityLayer';
+import { GuillocheLayer } from './layers/GuillocheLayer';
 import { StaticLayer } from './layers/StaticLayer';
 import { DynamicLayer } from './layers/DynamicLayer';
 import { DataAdapter } from './adapters/DataAdapter';
@@ -15,6 +16,7 @@ export {
   DocumentBuilder,
   Document,
   SecurityLayer,
+  GuillocheLayer,
   StaticLayer,
   DynamicLayer,
   DataAdapter,
@@ -31,6 +33,7 @@ export default {
   DocumentBuilder,
   Document,
   SecurityLayer,
+  GuillocheLayer,
   StaticLayer,
   DynamicLayer,
   DataAdapter,

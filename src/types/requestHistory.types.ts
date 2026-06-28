@@ -38,6 +38,7 @@ export type RequestHistoryProcessorRole = 'employee' | 'co_manager' | 'manager';
 
 export type RequestHistoryStep = {
   id: string;
+  sectionId?: string;
   stepOrder: number;
   sectionName: string;
   institutionName: string;

@@ -81,7 +81,8 @@ export default function RequestHistoryDetails() {
       });
 
       doc.preview();
-    } catch {
+    } catch (err) {
+      console.error('Document generation error:', err);
       Toast.error('حدث خطأ أثناء إنشاء المستند');
     }
   };

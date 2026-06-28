@@ -3,7 +3,8 @@
 /* ===== Document Container ===== */
 .document-container {
   direction: rtl;
-  font-family: 'Traditional Arabic', 'Arial', sans-serif;
+    font-family: "Qomra", "GE SS Two", "Noto Naskh Arabic", "Trajan Pro", "Noto Sans", sans-serif;
+
   color: #1a1a1a;
   background: white;
   position: relative;

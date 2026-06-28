@@ -44,6 +44,7 @@ export class DocumentLibrary {
 
       const document = new DocumentBuilder()
         .buildSecurityLayer(adapted.hash)
+        .buildGuillocheLayer(adapted.hash)
         .buildStaticLayer({
           institution: adapted.institution,
           logo: adapted.logo || this.config.defaultLogo

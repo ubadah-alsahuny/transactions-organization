@@ -14,9 +14,9 @@ export class SecurityLayer {
   constructor(dataHash, config = {}) {
     this.hash = dataHash || '0x' + '0'.repeat(64);
     this.config = {
-      lineCount: config.lineCount || 80,
-      opacityMin: config.opacityMin || 0.05,
-      opacityMax: config.opacityMax || 0.12,
+      lineCount: config.lineCount || 45,
+      opacityMin: config.opacityMin || 0.3,
+      opacityMax: config.opacityMax || 0.5,
       ...config
     };
     this.seed = this.hashToSeed(this.hash);
@@ -75,8 +75,8 @@ export class SecurityLayer {
       const y = rng() * 100;
       const angle = rng() * 360;
       const length = 15 + rng() * 45;
-      const thickness = 1.0 + rng() * 2.0;
-      const opacity = opacityMin + rng() * (opacityMax - opacityMin);
+      const thickness = 0.05 + rng() * 0.15;
+      const opacity = opacityMin + rng() * (opacityMax - opacityMin) + 0.5;
       const hue = 200 + rng() * 60;
       const dashPattern = [
         2 + rng() * 4,

@@ -20,9 +20,15 @@ export class DocumentLibrary {
   createDocument(rawData: Record<string, any>): Document;
 }
 
+export class GuillocheLayer {
+  constructor(dataHash: string, config?: Record<string, any>);
+  renderSVG(width?: number, height?: number): string;
+}
+
 export class DocumentBuilder {
   constructor();
   buildSecurityLayer(dataHash: string, config?: Record<string, any>): this;
+  buildGuillocheLayer(dataHash: string, config?: Record<string, any>): this;
   buildStaticLayer(data: Record<string, any>): this;
   buildDynamicLayer(data: Record<string, any>): this;
   setMetadata(metadata: Record<string, any>): this;

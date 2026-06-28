@@ -1,6 +1,7 @@
 // File: src/core/DocumentBuilder.js
 
 import { SecurityLayer } from '../layers/SecurityLayer';
+import { GuillocheLayer } from '../layers/GuillocheLayer';
 import { StaticLayer } from '../layers/StaticLayer';
 import { DynamicLayer } from '../layers/DynamicLayer';
 import { DataAdapter } from '../adapters/DataAdapter';
@@ -22,6 +23,7 @@ export class DocumentBuilder {
   reset() {
     this.documentData = {
       securityLayer: null,
+      guillocheLayer: null,
       staticLayer: null,
       dynamicLayer: null,
       metadata: {},
@@ -40,6 +42,17 @@ export class DocumentBuilder {
   buildSecurityLayer(dataHash, config = {}) {
     this.documentData.securityLayer = new SecurityLayer(dataHash, config);
     this.documentData.metadata.hash = dataHash;
+    return this;
+  }
+
+  /**
+   * Build guilloché layer with hash
+   * @param {string} dataHash - Hash for pattern generation
+   * @param {Object} config - Guilloché layer configuration
+   * @returns {DocumentBuilder} This instance for chaining
+   */
+  buildGuillocheLayer(dataHash, config = {}) {
+    this.documentData.guillocheLayer = new GuillocheLayer(dataHash, config);
     return this;
   }
 
