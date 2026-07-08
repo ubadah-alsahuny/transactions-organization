@@ -76,8 +76,8 @@ export class DynamicLayer {
 
     return `
       <div class="document-body">
-        <div class="section-frame">
-          <div class="section citizen-info">
+        <div class="citizen-qr-row">
+          <div class="section-frame citizen-info">
             <h4 class="section-title">${CITIZEN_INFO}</h4>
             <table class="info-table">
               <tbody>
@@ -109,6 +109,12 @@ export class DynamicLayer {
                 ` : ''}
               </tbody>
             </table>
+          </div>
+          <div class="qr-section-inline">
+            <div class="qr-container" id="qr-placeholder">
+              <div class="qr-placeholder">[QR]</div>
+              <p class="qr-label">${QR_LABEL}</p>
+            </div>
           </div>
         </div>
 
@@ -145,13 +151,6 @@ export class DynamicLayer {
         ${this.renderInitialData()}
 
         ${this.renderApprovalSignatures()}
-
-        <div class="section qr-section">
-          <div class="qr-container" id="qr-placeholder">
-            <div class="qr-placeholder">[QR]</div>
-            <p class="qr-label">${QR_LABEL}</p>
-          </div>
-        </div>
 
         <div class="document-footer">
           <div class="footer-seal">

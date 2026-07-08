@@ -70,7 +70,71 @@ const DOCUMENT_CSS = `
   border-bottom: 1px solid #b8944b;
   margin-top: 2px;
 }
+.document-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0 4px 0;
+  font-size: 12px;
+  color: #555;
+}
+.document-info-row .info-item {
+  font-weight: bold;
+  color: #1a3a5c;
+  letter-spacing: 1px;
+}
+.document-info-row .info-value {
+  color: #1a3a5c;
+  font-weight: bold;
+}
+.header-bottom-bar {
+  height: 3px;
+  background: linear-gradient(to left, #1a3a5c, #b8944b, #1a3a5c);
+  margin-top: 6px;
+  border-radius: 1px;
+}
 .section { margin-bottom: 18px; }
+.citizen-qr-row {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 18px;
+}
+.citizen-qr-row .section-frame {
+  flex: 1;
+  margin-bottom: 0;
+}
+.qr-section-inline {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+.qr-section-inline .qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.qr-section-inline .qr-placeholder {
+  width: 80px;
+  height: 80px;
+  background: #faf8f3;
+  border: 2px dashed #d4af37;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #b8944b;
+}
+.qr-section-inline .qr-label {
+  font-size: 10px;
+  color: #999;
+  margin: 0;
+  text-align: center;
+}
 .section-title {
   font-size: 15px;
   font-weight: bold;
@@ -218,6 +282,10 @@ const DOCUMENT_CSS = `
   .info-table td { border-bottom: 1px solid #ddd !important; }
   .header-text .republic-name { color: #1a3a5c !important; }
   .section-title { color: #1a3a5c !important; }
+  .header-top { direction: ltr !important; }
+  .header-text { direction: rtl !important; text-align: right !important; }
+  .document-info-row { direction: rtl !important; justify-content: space-between !important; }
+  .document-info-row .info-item:first-child { direction: rtl !important; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 `;
@@ -265,7 +333,10 @@ export class Document {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${this.metadata.title || 'وثيقة رسمية'}</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>${this.metadata.title || 'وثيقة رسمية'} ${Date.now()}</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
