@@ -38,49 +38,53 @@ export default function RequestHistoryDetails() {
     fetchDetails();
   }, [requestId]);
 
-  const handlePrintDocument = () => {
-    if (!details) return;
+  const getDocument = () => {
+    if (!details) return null;
 
     const hash = '0x' + details.request.id.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+    const lib = DocumentLibrary.getInstance({ primaryColor: '#154239' });
 
+    return lib.createDocument({
+      citizen: {
+        name: details.citizen.name,
+        nationalId: details.citizen.nationalId,
+      },
+      request: {
+        id: details.request.id,
+        transactionName: details.transaction.name,
+        status: details.request.status,
+        createdAt: details.request.createdAt,
+        updatedAt: details.request.updatedAt,
+      },
+      institution: {
+        name: details.steps[0]?.institutionName || '',
+      },
+      intialData: details.cumulativeData,
+      stepData: details.steps.map(step => ({
+        stepOrder: step.stepOrder,
+        sectionName: step.sectionName,
+        sectionId: step.sectionId || step.id,
+        status: step.status === 'approved' ? 'completed' : step.status,
+        employeeName: step.processor.name,
+        employeeId: step.processor.email,
+        processedAt: step.processedAt,
+        data: step.data,
+      })),
+      signature: {
+        name: details.steps[details.steps.length - 1]?.processor?.name || '',
+        title: details.steps[details.steps.length - 1]?.processor?.role || '',
+        date: details.steps[details.steps.length - 1]?.processedAt || '',
+      },
+      dataHash: hash,
+    });
+  };
+
+  const handlePrintDocument = () => {
     try {
-      const lib = DocumentLibrary.getInstance({ primaryColor: '#154239' });
-
-      const doc = lib.createDocument({
-        citizen: {
-          name: details.citizen.name,
-          nationalId: details.citizen.nationalId,
-        },
-        request: {
-          id: details.request.id,
-          transactionName: details.transaction.name,
-          status: details.request.status,
-          createdAt: details.request.createdAt,
-          updatedAt: details.request.updatedAt,
-        },
-        institution: {
-          name: details.steps[0]?.institutionName || '',
-        },
-        intialData: details.cumulativeData,
-        stepData: details.steps.map(step => ({
-          stepOrder: step.stepOrder,
-          sectionName: step.sectionName,
-          sectionId: step.sectionId || step.id,
-          status: step.status === 'approved' ? 'completed' : step.status,
-          employeeName: step.processor.name,
-          employeeId: step.processor.email,
-          processedAt: step.processedAt,
-          data: step.data,
-        })),
-        signature: {
-          name: details.steps[details.steps.length - 1]?.processor?.name || '',
-          title: details.steps[details.steps.length - 1]?.processor?.role || '',
-          date: details.steps[details.steps.length - 1]?.processedAt || '',
-        },
-        dataHash: hash,
-      });
-
-      doc.preview();
+      const doc = getDocument();
+      if (doc) {
+        doc.preview();
+      }
     } catch (err) {
       console.error('Document generation error:', err);
       Toast.error('حدث خطأ أثناء إنشاء المستند');
@@ -111,7 +115,7 @@ export default function RequestHistoryDetails() {
             className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
           >
             <Printer size={16} />
-            طباعة المستند
+            طباعة/معاينة المستند
           </button>
         )}
       </div>

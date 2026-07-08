@@ -45,30 +45,34 @@ export default function RequestDetails() {
     fallbackFetch();
   }, [request, requestId]);
 
-  const handlePrintDocument = () => {
-    if (!request) return;
+  const getDocument = () => {
+    if (!request) return null;
 
     const hash = '0x' + request.requestId.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+    const lib = DocumentLibrary.getInstance({
+      primaryColor: '#154239',
+    });
 
+    return lib.createDocument({
+      citizen: { id: request.citizen.id, name: request.citizen.name },
+      request: {
+        requestId: request.requestId,
+        transactionName: request.transactionName,
+        requestStatus: request.requestStatus,
+        createdAt: request.createdAt,
+        updatedAt: request.updatedAt,
+      },
+      institution: { id: '', name: '' },
+      dataHash: hash,
+    });
+  };
+
+  const handlePrintDocument = () => {
     try {
-      const lib = DocumentLibrary.getInstance({
-        primaryColor: '#154239',
-      });
-
-      const doc = lib.createDocument({
-        citizen: { id: request.citizen.id, name: request.citizen.name },
-        request: {
-          requestId: request.requestId,
-          transactionName: request.transactionName,
-          requestStatus: request.requestStatus,
-          createdAt: request.createdAt,
-          updatedAt: request.updatedAt,
-        },
-        institution: { id: '', name: '' },
-        dataHash: hash,
-      });
-
-      doc.preview();
+      const doc = getDocument();
+      if (doc) {
+        doc.preview();
+      }
     } catch (err) {
       console.error('Document generation error:', err);
       Toast.error('حدث خطأ أثناء إنشاء المستند');
@@ -99,7 +103,7 @@ export default function RequestDetails() {
             className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
           >
             <Printer size={16} />
-            طباعة المستند
+            طباعة/معاينة المستند
           </button>
         )}
       </div>

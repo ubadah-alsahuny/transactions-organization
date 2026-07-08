@@ -1,5 +1,3 @@
-// File: src/core/DocumentLibrary.js
-
 import { DocumentBuilder } from './DocumentBuilder';
 import { DataAdapter } from '../adapters/DataAdapter';
 import { EventManager } from '../observers/EventManager';
@@ -57,9 +55,11 @@ export class DocumentLibrary {
           signature: adapted.signature
         })
         .setMetadata({
+          id: adapted.request?.id || 'document',
           version: '1.0',
           createdAt: new Date().toISOString(),
-          generator: 'DocumentLibrary'
+          generator: 'DocumentLibrary',
+          documentId: adapted.request?.id || ''
         })
         .setStyles({
           primaryColor: this.config.primaryColor,

@@ -1,5 +1,3 @@
-// File: src/core/Document.js
-
 import { constants } from '../utils/constants';
 
 const DOCUMENT_CSS = `
@@ -47,7 +45,7 @@ const DOCUMENT_CSS = `
 .header-text .institution-name {
   font-size: 20px;
   font-weight: normal;
-  color: #b8944b;
+  color: #1a3a5c;
   margin: 0 0 3px 0;
 }
 .header-text .document-type {
@@ -336,17 +334,24 @@ export class Document {
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>${this.metadata.title || 'وثيقة رسمية'} ${Date.now()}</title>
+<title>وثيقة رسمية</title>
 <style>
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   background: #f5f3f0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   min-height: 100vh;
   font-family: ${fontFamily};
   direction: rtl;
+  margin: 0;
+  padding: 0;
 }
 .document-container {
   width: ${PAGE_WIDTH}mm;
@@ -381,11 +386,81 @@ body {
 @media screen and (max-width: 800px) {
   .document-container { width: 100%; min-height: auto; padding: 10mm; margin: 10px; }
 }
+
+/* Toolbar styling */
+.preview-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  background: rgba(21, 66, 57, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-bottom: 2px solid #b8944b;
+  width: 100%;
+}
+.preview-toolbar button {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  border: none;
+}
+.preview-toolbar .btn-print {
+  background: #b8944b;
+  color: white;
+}
+.preview-toolbar .btn-print:hover {
+  background: #a3813c;
+  transform: translateY(-1px);
+}
+.preview-toolbar .btn-close {
+  background: transparent;
+  color: #ffcdd2;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.preview-toolbar .btn-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.preview-toolbar .spinner {
+  animation: spin 1s linear infinite;
+}
+@media print {
+  .preview-toolbar {
+    display: none !important;
+  }
+}
 </style>
 <style>${DOCUMENT_CSS}</style>
 <style>${customCSS}</style>
 </head>
 <body>
+<div class="preview-toolbar no-print">
+  <button class="btn-print" onclick="window.print()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+    طباعة المستند
+  </button>
+  <button class="btn-close" onclick="window.close()">
+    إغلاق المعاينة
+  </button>
+</div>
 <div class="document-container" data-document-id="${this.metadata.id || ''}">
   <div class="security-layer">${securityHTML}</div>
   ${guillocheHTML ? '<div class="guilloche-layer">' + guillocheHTML + '</div>' : ''}
@@ -412,6 +487,15 @@ body {
   renderToElement() {
     const container = document.createElement('div');
     container.innerHTML = this.render();
+    const docElement = container.querySelector('.document-container');
+    if (docElement) {
+      // Clone all style elements and append them to docElement so they are active and bundled
+      const styles = container.querySelectorAll('style');
+      styles.forEach(style => {
+        docElement.appendChild(style.cloneNode(true));
+      });
+      return docElement;
+    }
     return container.firstElementChild;
   }
 
@@ -456,11 +540,15 @@ body {
       import('jspdf'),
     ]);
 
-    const element = this.renderToElement();
-    document.body.appendChild(element);
+    const targetElement = options.element || this.renderToElement();
+    const shouldManageLifecycle = !options.element;
+
+    if (shouldManageLifecycle) {
+      document.body.appendChild(targetElement);
+    }
 
     try {
-      const canvas = await html2canvas(element, {
+      const canvas = await html2canvas(targetElement, {
         scale: 2,
         useCORS: true,
         logging: false,
@@ -481,7 +569,9 @@ body {
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(filename);
     } finally {
-      document.body.removeChild(element);
+      if (shouldManageLifecycle) {
+        document.body.removeChild(targetElement);
+      }
     }
   }
 

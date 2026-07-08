@@ -1,5 +1,3 @@
-// File: src/core/DocumentBuilder.js
-
 import { SecurityLayer } from '../layers/SecurityLayer';
 import { GuillocheLayer } from '../layers/GuillocheLayer';
 import { StaticLayer } from '../layers/StaticLayer';
@@ -133,10 +131,10 @@ export class DocumentBuilder {
 
     // Create Document instance
     const document = new Document(this.documentData);
-    
+
     // Reset builder for next use
     this.reset();
-    
+
     return document;
   }
 
@@ -147,7 +145,7 @@ export class DocumentBuilder {
    */
   static quickBuild(data) {
     const adapted = DataAdapter.adapt(data);
-    
+
     return new DocumentBuilder()
       .buildSecurityLayer(adapted.hash)
       .buildStaticLayer({
