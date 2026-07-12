@@ -1,10 +1,12 @@
-import { ArrowLeft, Printer } from 'lucide-react';
+import { ArrowLeft, FileDown, Printer } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DataCard from '../../../components/common/DataCard';
 import RequestHistoryTimeline from '../../../components/common/RequestHistoryTimeline';
 import { Toast } from '../../../components/common/Toast';
 import sectionStyles from '../../../components/layout/section.module.css';
+import { ENV } from '../../../env';
+import { api } from '../../../services/api';
 import { requestHistoryService } from '../../../services/requestHistory.service';
 import { DocumentLibrary } from '../../../packages/document-generator/src/index.js';
 import type { RequestHistoryDetailsResponse } from '../../../types/requestHistory.types';
@@ -15,6 +17,7 @@ export default function RequestHistoryDetails() {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [details, setDetails] = useState<RequestHistoryDetailsResponse | null>(null);
 
   const fetchDetails = async () => {
@@ -38,13 +41,16 @@ export default function RequestHistoryDetails() {
     fetchDetails();
   }, [requestId]);
 
-  const getDocument = () => {
-    if (!details) return null;
+  const handlePreviewDocument = () => {
+    if (!details) return;
 
-    const hash = '0x' + details.request.id.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+    const hash = details.transactionHashes?.initialDataHash
+      ? '0x' + details.transactionHashes.initialDataHash
+      : '0x' + details.request.id.replace(/-/g, '').padStart(64, '0').slice(0, 64);
+
     const lib = DocumentLibrary.getInstance({ primaryColor: '#154239' });
 
-    return lib.createDocument({
+    const doc = lib.createDocument({
       citizen: {
         name: details.citizen.name,
         nationalId: details.citizen.nationalId,
@@ -76,18 +82,37 @@ export default function RequestHistoryDetails() {
         date: details.steps[details.steps.length - 1]?.processedAt || '',
       },
       dataHash: hash,
-    });
+    }, { previewOnly: true });
+
+    try {
+      doc.preview();
+    } catch (err) {
+      console.error('Document preview error:', err);
+      Toast.error('حدث خطأ أثناء فتح معاينة المستند');
+    }
   };
 
-  const handlePrintDocument = () => {
+  const handleDownloadPdf = async () => {
+    if (!requestId) return;
+    setIsGenerating(true);
     try {
-      const doc = getDocument();
-      if (doc) {
-        doc.preview();
-      }
+      const response = await api.get(`/documents/requests/history/${requestId}/generate`, {
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `document-${requestId.slice(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Document generation error:', err);
-      Toast.error('حدث خطأ أثناء إنشاء المستند');
+      console.error('PDF download error:', err);
+      Toast.error('حدث خطأ أثناء تحميل المستند');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -109,14 +134,25 @@ export default function RequestHistoryDetails() {
         </button>
 
         {details?.request.status === 'completed' && (
-          <button
-            type="button"
-            onClick={handlePrintDocument}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
-          >
-            <Printer size={16} />
-            طباعة/معاينة المستند
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={isGenerating}
+              className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+            >
+              <FileDown size={16} />
+              {isGenerating ? 'جارٍ التحميل...' : 'تحميل المستند الرسمي'}
+            </button>
+            <button
+              type="button"
+              onClick={handlePreviewDocument}
+              className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-all cursor-pointer"
+            >
+              <Printer size={16} />
+              معاينة
+            </button>
+          </div>
         )}
       </div>
 

@@ -34,15 +34,13 @@ export class DocumentLibrary {
     return DocumentLibrary.instance;
   }
 
-  createDocument(rawData) {
+  createDocument(rawData, options = {}) {
     try {
       this.events.notify('beforeCreate', { data: rawData });
 
       const adapted = DataAdapter.adapt(rawData);
 
-      const document = new DocumentBuilder()
-        .buildSecurityLayer(adapted.hash)
-        .buildGuillocheLayer(adapted.hash)
+      const builder = new DocumentBuilder()
         .buildStaticLayer({
           institution: adapted.institution,
           logo: adapted.logo || this.config.defaultLogo
@@ -56,16 +54,26 @@ export class DocumentLibrary {
         })
         .setMetadata({
           id: adapted.request?.id || 'document',
+          hash: adapted.hash,
           version: '1.0',
           createdAt: new Date().toISOString(),
           generator: 'DocumentLibrary',
-          documentId: adapted.request?.id || ''
+          documentId: adapted.request?.id || '',
+          citizen: adapted.citizen,
+          institution: adapted.institution
         })
         .setStyles({
           primaryColor: this.config.primaryColor,
           fontFamily: this.config.fontFamily
-        })
-        .build();
+        });
+
+      // Security layers only for full PDF generation (not preview)
+      if (!options.previewOnly) {
+        builder.buildSecurityLayer(adapted.hash);
+        builder.buildGuillocheLayer(adapted.hash);
+      }
+
+      const document = builder.build();
 
       this.events.notify('afterCreate', { document });
       return document;

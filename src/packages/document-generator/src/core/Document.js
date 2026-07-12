@@ -317,7 +317,9 @@ export class Document {
     const { PAGE_WIDTH, PAGE_HEIGHT, PAGE_MARGIN } = constants;
     const { primaryColor = '#1a3a5c', fontFamily = 'Traditional Arabic, Arial, sans-serif' } = this.styles;
 
-    const securityHTML = this.securityLayer.renderSVG(PAGE_WIDTH, PAGE_HEIGHT);
+    const securityHTML = this.securityLayer
+      ? this.securityLayer.renderSVG(PAGE_WIDTH, PAGE_HEIGHT)
+      : '';
     const guillocheHTML = this.guillocheLayer
       ? this.guillocheLayer.renderSVG(PAGE_WIDTH)
       : '';
@@ -462,8 +464,8 @@ body {
   </button>
 </div>
 <div class="document-container" data-document-id="${this.metadata.id || ''}">
-  <div class="security-layer">${securityHTML}</div>
-  ${guillocheHTML ? '<div class="guilloche-layer">' + guillocheHTML + '</div>' : ''}
+    ${securityHTML ? '<div class="security-layer">' + securityHTML + '</div>' : ''}
+    ${guillocheHTML ? '<div class="guilloche-layer">' + guillocheHTML + '</div>' : ''}
   <div class="static-layer">${staticHTML}</div>
   <div class="dynamic-layer">${dynamicHTML}</div>
   <div class="document-footer">
@@ -586,7 +588,7 @@ body {
       createdAt: this.metadata.createdAt || null,
       institution: this.metadata.institution?.name || null,
       citizen: this.metadata.citizen?.name || null,
-      ...this.securityLayer?.getVerificationData?.() || {}
+      ...(this.securityLayer?.getVerificationData?.() || {})
     };
   }
 

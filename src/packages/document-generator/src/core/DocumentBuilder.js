@@ -119,9 +119,6 @@ export class DocumentBuilder {
    */
   build() {
     // Validate required layers
-    if (!this.documentData.securityLayer) {
-      throw new Error('Security layer is required. Call buildSecurityLayer() first.');
-    }
     if (!this.documentData.staticLayer) {
       throw new Error('Static layer is required. Call buildStaticLayer() first.');
     }

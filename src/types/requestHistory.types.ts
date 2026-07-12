@@ -69,5 +69,11 @@ export type RequestHistoryDetailsResponse = {
   };
   steps: RequestHistoryStep[];
   cumulativeData: Record<string, any>;
+  transactionHashes?: {
+    initialDataHash: string;
+    initialDataHashMatchesDatabase: boolean;
+    lastBlockHash: string;
+    previousBlockHash: string;
+  };
 };
 

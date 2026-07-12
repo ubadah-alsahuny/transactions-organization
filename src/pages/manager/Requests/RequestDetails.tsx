@@ -45,36 +45,31 @@ export default function RequestDetails() {
     fallbackFetch();
   }, [request, requestId]);
 
-  const getDocument = () => {
-    if (!request) return null;
+  const handlePreviewDocument = () => {
+    if (!request) return;
 
     const hash = '0x' + request.requestId.replace(/-/g, '').padStart(64, '0').slice(0, 64);
     const lib = DocumentLibrary.getInstance({
       primaryColor: '#154239',
     });
 
-    return lib.createDocument({
-      citizen: { id: request.citizen.id, name: request.citizen.name },
-      request: {
-        requestId: request.requestId,
-        transactionName: request.transactionName,
-        requestStatus: request.requestStatus,
-        createdAt: request.createdAt,
-        updatedAt: request.updatedAt,
-      },
-      institution: { id: '', name: '' },
-      dataHash: hash,
-    });
-  };
-
-  const handlePrintDocument = () => {
     try {
-      const doc = getDocument();
-      if (doc) {
-        doc.preview();
-      }
+      const doc = lib.createDocument({
+        citizen: { id: request.citizen.id, name: request.citizen.name },
+        request: {
+          requestId: request.requestId,
+          transactionName: request.transactionName,
+          requestStatus: request.requestStatus,
+          createdAt: request.createdAt,
+          updatedAt: request.updatedAt,
+        },
+        institution: { id: '', name: '' },
+        dataHash: hash,
+        previewOnly: true,
+      });
+      doc.preview();
     } catch (err) {
-      console.error('Document generation error:', err);
+      console.error('Document preview error:', err);
       Toast.error('حدث خطأ أثناء إنشاء المستند');
     }
   };
@@ -99,11 +94,11 @@ export default function RequestDetails() {
         {request?.requestStatus === 'completed' && (
           <button
             type="button"
-            onClick={handlePrintDocument}
+            onClick={handlePreviewDocument}
             className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white shadow-md hover:opacity-90 transition-all cursor-pointer"
           >
             <Printer size={16} />
-            طباعة/معاينة المستند
+            معاينة
           </button>
         )}
       </div>
