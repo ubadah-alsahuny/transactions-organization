@@ -1,15 +1,16 @@
-import { ArrowLeft, FileDown, Printer } from 'lucide-react';
+import { ArrowLeft, FileDown, Printer, ShieldCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DataCard from '../../../components/common/DataCard';
 import RequestHistoryTimeline from '../../../components/common/RequestHistoryTimeline';
 import { Toast } from '../../../components/common/Toast';
+import VerificationModal from '../../../components/verification/VerificationModal';
 import sectionStyles from '../../../components/layout/section.module.css';
-import { ENV } from '../../../env';
 import { api } from '../../../services/api';
 import { requestHistoryService } from '../../../services/requestHistory.service';
 import { DocumentLibrary } from '../../../packages/document-generator/src/index.js';
 import type { RequestHistoryDetailsResponse } from '../../../types/requestHistory.types';
+import type { VerificationResult } from '../../../types/verification.types';
 import { formatDateTime } from '../../../utils/dateFormatter';
 
 export default function RequestHistoryDetails() {
@@ -19,6 +20,10 @@ export default function RequestHistoryDetails() {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [details, setDetails] = useState<RequestHistoryDetailsResponse | null>(null);
+
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyResult, setVerifyResult] = useState<VerificationResult | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const fetchDetails = async () => {
     if (!requestId) return;
@@ -116,6 +121,29 @@ export default function RequestHistoryDetails() {
     }
   };
 
+  const handleVerify = async () => {
+    if (!requestId) return;
+    setShowVerifyModal(true);
+    setIsVerifying(true);
+    setVerifyResult(null);
+    try {
+      const response = await api.get(`/documents/verify/${requestId}/json`);
+      const data = response.data;
+      if (data.success) {
+        setVerifyResult(data.data);
+      } else {
+        Toast.error(data.error ?? 'فشل التحقق');
+        setShowVerifyModal(false);
+      }
+    } catch (err: any) {
+      console.error('Verification error:', err);
+      Toast.error(err.response?.data?.error ?? 'حدث خطأ أثناء التحقق');
+      setShowVerifyModal(false);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   return (
     <div className={sectionStyles.section}>
       <div className={sectionStyles.titleContainer}>
@@ -135,6 +163,14 @@ export default function RequestHistoryDetails() {
 
         {details?.request.status === 'completed' && (
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleVerify}
+              className="inline-flex items-center gap-2 rounded-2xl border border-green-600 bg-green-50 px-4 py-2 font-semibold text-green-700 hover:bg-green-100 transition-all cursor-pointer"
+            >
+              <ShieldCheck size={16} />
+              التحقق
+            </button>
             <button
               type="button"
               onClick={handleDownloadPdf}
@@ -203,7 +239,13 @@ export default function RequestHistoryDetails() {
       ) : (
         <div className="text-[var(--color-sub-text)]">الطلب غير موجود</div>
       )}
+
+      <VerificationModal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        result={verifyResult}
+        isLoading={isVerifying}
+      />
     </div>
   );
 }
-
