@@ -5,6 +5,7 @@ import EmployeeLogin from '../pages/employee/EmployeeLogin';
 import EmployeePendingRequestsList from '../pages/employee/PendingRequestsList';
 import EmployeeRequestDetails from '../pages/employee/RequestDetails';
 import EmployeeMyProfile from '../pages/employee/MyProfile';
+import EmployeeVerification from '../pages/employee/EmployeeVerification';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Landing from '../pages/shared/Landing';
@@ -114,6 +115,7 @@ const router = createBrowserRouter([
       { path: 'dashboard', element: <DashboardHome /> },
       { path: 'requests/pending', element: <EmployeePendingRequestsList /> },
       { path: 'requests/:requestId', element: <EmployeeRequestDetails /> },
+      { path: 'verify', element: <EmployeeVerification /> },
       { path: 'profile', element: <EmployeeMyProfile /> },
     ],
   },

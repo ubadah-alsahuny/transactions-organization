@@ -28,9 +28,9 @@ export class StaticLayer {
    * @returns {string} HTML markup
    */
   render() {
-    const { REPUBLIC, DEPARTMENT, OFFICIAL_DOCUMENT } = this.staticTexts;
+    const { REPUBLIC, OFFICIAL_DOCUMENT } = this.staticTexts;
     const institutionName = this.institution.name || '';
-    const logoHtml = this.logo 
+    const logoHtml = this.logo
       ? `<img src="${this.logo}" alt="شعار الجمهورية" class="logo" />`
       : '<div class="logo-placeholder"></div>';
 
@@ -50,7 +50,7 @@ export class StaticLayer {
           <div class="header-text">
             <h1 class="republic-name">${REPUBLIC}</h1>
             <div class="header-decorative-line"></div>
-            <h2 class="institution-name">${DEPARTMENT} ${institutionName}</h2>
+            <h2 class="institution-name">${institutionName}</h2>
           </div>
         </div>
         <div class="official-document-frame">

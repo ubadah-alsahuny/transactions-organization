@@ -1,4 +1,5 @@
 import { ShieldCheck, ShieldX, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import type { VerificationResult } from '../../types/verification.types';
 
 type Props = {
@@ -11,17 +12,17 @@ type Props = {
 export default function VerificationModal({ isOpen, onClose, result, isLoading }: Props) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/40"
+      className="fixed inset-0 z-1000 overflow-y-auto bg-black/40"
       onClick={onClose}
     >
-      <div className="flex min-h-full items-start justify-center p-4 pt-12">
+      <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className="w-full max-w-[600px] rounded-3xl bg-white p-6 shadow-2xl"
+          className="w-full max-w-[600px] rounded-3xl bg-white p-5 shadow-2xl"
           onClick={e => e.stopPropagation()}
         >
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-bold">التحقق من صحة المعاملة</h2>
             <button
               type="button"
@@ -40,11 +41,10 @@ export default function VerificationModal({ isOpen, onClose, result, isLoading }
           ) : result ? (
             <>
               <div
-                className={`mb-4 flex items-center gap-3 rounded-2xl p-4 ${
-                  result.verification.status === 'verified'
-                    ? 'bg-green-50 text-green-700'
-                    : 'bg-red-50 text-red-700'
-                }`}
+                className={`mb-3 flex items-center gap-3 rounded-2xl p-3 ${result.verification.status === 'verified'
+                  ? 'bg-green-50 text-green-700'
+                  : 'bg-red-50 text-red-700'
+                  }`}
               >
                 {result.verification.status === 'verified' ? (
                   <ShieldCheck size={28} />
@@ -65,15 +65,14 @@ export default function VerificationModal({ isOpen, onClose, result, isLoading }
                 </div>
               </div>
 
-              <div className="mb-4">
-                <div className="mb-2 text-sm font-bold text-gray-500">الفحوصات</div>
+              <div className="mb-3">
+                <div className="mb-1.5 text-sm font-bold text-gray-500">الفحوصات</div>
                 <div className="space-y-1">
                   {result.verification.checks.map(check => (
                     <div
                       key={check.key}
-                      className={`flex items-center justify-between rounded-xl px-3 py-2 text-sm ${
-                        check.passed ? 'bg-green-50' : 'bg-red-50'
-                      }`}
+                      className={`flex items-center justify-between rounded-xl px-3 py-1.5 text-sm ${check.passed ? 'bg-green-50' : 'bg-red-50'
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <span className={check.passed ? 'text-green-600' : 'text-red-600'}>
@@ -92,13 +91,13 @@ export default function VerificationModal({ isOpen, onClose, result, isLoading }
               </div>
 
               {result.verification.issues.length > 0 && (
-                <div className="mb-4">
-                  <div className="mb-2 text-sm font-bold text-gray-500">المشكلات</div>
+                <div className="mb-3">
+                  <div className="mb-1.5 text-sm font-bold text-gray-500">المشكلات</div>
                   <div className="space-y-1">
-                    {result.verification.issues.map(issue => (
+                    {result.verification.issues.map((issue, idx) => (
                       <div
-                        key={issue.code}
-                        className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700"
+                        key={`${issue.code}-${idx}`}
+                        className="rounded-xl bg-red-50 px-3 py-1.5 text-sm text-red-700"
                       >
                         <span className="font-bold">{issue.code}</span>: {issue.message}
                       </div>
@@ -117,6 +116,7 @@ export default function VerificationModal({ isOpen, onClose, result, isLoading }
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

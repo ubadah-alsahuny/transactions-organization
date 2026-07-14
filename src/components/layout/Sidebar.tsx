@@ -1,4 +1,4 @@
-import { Building2, FileText, History, Home,  Layers3, UserRound, Users } from 'lucide-react';
+import { Building2, FileText, History, Home, Layers3, ShieldCheck, UserRound, Users } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import SidebarItem from './SidebarItem';
 import logo from '../../assets/logos/Syrian_Government_Logo.svg';
@@ -34,6 +34,7 @@ export default function Sidebar() {
         : [
             { to: '/employee/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },
             { to: '/employee/requests/pending', label: 'الطلبات المعلقة', icon: <Building2 size={18} /> },
+            { to: '/employee/verify', label: 'تحقق', icon: <ShieldCheck size={18} /> },
             { to: '/employee/profile', label: 'حسابي', icon: <UserRound size={18} /> },
           ];
 

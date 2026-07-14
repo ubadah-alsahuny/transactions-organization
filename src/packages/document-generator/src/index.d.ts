@@ -17,7 +17,7 @@ export class DocumentLibrary {
   static instance: DocumentLibrary | null;
   constructor(config?: DocumentLibraryConfig);
   static getInstance(config?: DocumentLibraryConfig): DocumentLibrary;
-  createDocument(rawData: Record<string, any>): Document;
+  createDocument(rawData: Record<string, any>, options?: Record<string, any>): Document;
 }
 
 export class GuillocheLayer {
