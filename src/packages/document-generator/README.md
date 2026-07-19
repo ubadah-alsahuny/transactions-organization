@@ -1,6 +1,6 @@
 # @local/document-generator
 
-Official document generator for the Syrian Arab Republic — produces printable/PDF official transaction documents with a security layer, static branding, and dynamic content.
+Official document generator for the Syrian Arab Republic — produces printable/PDF official transaction documents with security layers (hash-based patterns & mathematical guilloché), static branding, and dynamic content.
 
 ## Architecture
 
@@ -18,6 +18,8 @@ The library follows a **layered architecture** with a **Builder pattern**:
                  ┌────────▼─────────┐
                  │     Document     │  (Renders, prints, exports to PDF)
                  │  ┌─────────────┐ │
+                 │  │GuillocheLayer│ │  (SVG rosette background pattern)
+                 │  ├─────────────┤ │
                  │  │ SecurityLayer│ │  (Hash-based SVG pattern overlay)
                  │  ├─────────────┤ │
                  │  │ StaticLayer  │ │  (Republic name, logo, header)
@@ -32,6 +34,17 @@ The library follows a **layered architecture** with a **Builder pattern**:
 ```
 
 ## Layers
+
+### GuillocheLayer
+Generates high-security **guilloché rosette background patterns** (concentric waves, fine rings, cross-hatching, Lissajous curves, radial spokes, spiral connectors, central medallions, moiré interference, and micro-dots) based on the transaction hash. Used to deter counterfeiting and ensure document authenticity.
+
+```
+GuillocheLayer(hash, config)
+  ├── hashToSeed(hash)              → numeric seed
+  ├── createRNG(seed)               → seeded PRNG
+  ├── generateRosette(width,height) → SVG paths & dots
+  └── renderSVG(width,height)       → SVG string
+```
 
 ### SecurityLayer
 Generates a unique **SVG pattern** of lines based on a blockchain/backend hash. The pattern is deterministic — the same hash always produces the same lines. Used as a semi-transparent background overlay for tamper verification.
@@ -74,11 +87,12 @@ DataAdapter.adapt(rawData)     ← normalises camelCase/snake_case, fills defaul
     ├── intialData  → { key: value }  (dynamic)
     ├── stepData    → { _allNotes[], _completedSteps, sectionName: {...} }
     ├── signature   → { name, title, date, stamp, isDigital }
-    └── hash        → '0x...' (for SecurityLayer)
+    └── hash        → '0x...' (for SecurityLayer & GuillocheLayer)
     │
     ▼
 DocumentBuilder
   └── .buildSecurityLayer(hash)
+  └── .buildGuillocheLayer(hash, config)
   └── .buildStaticLayer({ institution, logo })
   └── .buildDynamicLayer({ citizen, request, intialData, stepData, signature })
   └── .setMetadata({ ... })
@@ -141,6 +155,7 @@ src/
 │   └── DocumentLibrary.js   # Singleton entry point with events
 ├── layers/
 │   ├── SecurityLayer.js     # Hash-based SVG security overlay
+│   ├── GuillocheLayer.js    # Mathematical SVG rosette background pattern
 │   ├── StaticLayer.js       # Republic name, logo, header
 │   └── DynamicLayer.js      # Citizen, transaction, notes, signature
 ├── adapters/
