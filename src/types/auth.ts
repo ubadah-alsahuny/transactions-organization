@@ -5,7 +5,7 @@ export interface User {
   email: string;
   role: Role;
   token: string;
-  institution?: { id: string; name: string };
+  institution?: { id: string; name: string; logo?: string };
   section?: { id: string; name: string };
 }
 

@@ -26,6 +26,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   })(),
   login: (userData: User) => {
+    localStorage.removeItem(ENV.TOKEN_KEY);
+    localStorage.removeItem(ENV.USER_KEY);
+    localStorage.removeItem(ENV.ROLE_KEY);
+    localStorage.removeItem(ENV.INSTITUTION_ID_KEY);
+    localStorage.removeItem(ENV.INSTITUTION_NAME_KEY);
+    localStorage.removeItem(ENV.SECTION_ID_KEY);
+    localStorage.removeItem(ENV.SECTION_NAME_KEY);
+
     localStorage.setItem(ENV.TOKEN_KEY, userData.token);
     localStorage.setItem(ENV.USER_KEY, JSON.stringify(userData));
     localStorage.setItem(ENV.ROLE_KEY, userData.role);

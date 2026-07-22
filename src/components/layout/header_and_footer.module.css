@@ -23,7 +23,9 @@
 .navigation_header_buttons{
     display: flex;
     gap: 0.5rem;
-    width: 45%;
+    flex: 1;
+    min-width: 0;
+    width: auto;
 }
 
 .header_icons {
@@ -47,13 +49,14 @@
     place-items: center;
     border-radius: 2rem;
     background-color: var(--color-section);
+    min-width: 380px;
 }
 
 .syrian_logo{
-    width: 4rem;
-    height: 4rem;
+    width: 112px;
+    height: 112px;
     margin-right: 1rem;
-    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(283deg) brightness(var(--color-logo)) contrast(103%);
+    object-fit: contain;
 }
 
 .toggle_settings{
