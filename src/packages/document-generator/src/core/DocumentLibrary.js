@@ -67,10 +67,36 @@ export class DocumentLibrary {
           fontFamily: this.config.fontFamily
         });
 
-      // Security layers only for full PDF generation (not preview)
-      if (!options.previewOnly) {
-        builder.buildSecurityLayer(adapted.hash);
-        builder.buildGuillocheLayer(adapted.hash);
+      if (options.previewOnly) {
+        const dateFragment =
+          typeof options.dateFragment === 'string'
+            ? options.dateFragment
+            : typeof adapted.request?.createdAt === 'string'
+              ? adapted.request.createdAt.slice(0, 10)
+              : '';
+
+        // Security: microtext rendered as individual <text> elements
+        // (no <textPath>) — reliable in all SVG renderers including print.
+        builder.buildSecurityLayer(adapted.hash, {
+          institutionCode: typeof options.institutionCode === 'string' ? options.institutionCode : 'GOV',
+          dateFragment,
+          useMicrotext: true,
+          contentRepeatCount: 1,
+          lineCount: 55,
+          opacityMin: 0.95,
+          opacityMax: 1.0,
+          microtextFontSize: 0.170,
+          microtextFontSizeMin: 0.400,
+          microtextFontSizeMax: 1.010,
+          microtextLetterSpacing: 0.002,
+          microtextStrokeScale: 0.030,
+        });
+
+        // Guilloche: always stroke-based (no microtext)
+        builder.buildGuillocheLayer(adapted.hash, {
+          centerY: -45,
+          arcRadius: 114,
+        });
       }
 
       const document = builder.build();

@@ -97,6 +97,46 @@ export class SecurityLayer {
   }
 
   /**
+   * Compute SVG path data string for a single security line descriptor.
+   * Shared by both the stroke renderer and the microtext renderer.
+   *
+   * @param  {Object} line   Line descriptor from generateLines()
+   * @param  {number} width  Page width in mm
+   * @param  {number} height Page height in mm
+   * @returns {string}       SVG path `d` value
+   */
+  lineToPathData(line, width, height) {
+    const x1       = (line.x / 100) * width;
+    const y1       = (line.y / 100) * height;
+    const angleRad = line.angle * Math.PI / 180;
+    const x2       = x1 + Math.cos(angleRad) * line.length;
+    const y2       = y1 + Math.sin(angleRad) * line.length;
+    const midX     = (x1 + x2) / 2 + Math.sin(line.angle * 0.1) * line.waviness * 3;
+    const midY     = (y1 + y2) / 2 + Math.cos(line.angle * 0.1) * line.waviness * 3;
+    return line.waviness > 0.1
+      ? `M ${x1.toFixed(2)} ${y1.toFixed(2)} Q ${midX.toFixed(2)} ${midY.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`
+      : `M ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  }
+
+  /**
+   * Protected render hook — converts line descriptors to SVG markup.
+   * Override in subclasses to swap stroke rendering for microtext rendering.
+   *
+   * @param  {Array}  lines  Output of generateLines()
+   * @param  {number} width  Page width in mm
+   * @param  {number} height Page height in mm
+   * @returns {string}       SVG markup (no wrapping <svg> tag)
+   */
+  _renderLines(lines, width, height) {
+    let svg = '';
+    for (const line of lines) {
+      const d = this.lineToPathData(line, width, height);
+      svg += `<path d="${d}" stroke="hsla(${line.hue}, 40%, 35%, ${line.opacity})" stroke-width="${line.thickness}" stroke-dasharray="${line.dash.join(', ')}" data-line-id="${line.id}" fill="none" />\n`;
+    }
+    return svg;
+  }
+
+  /**
    * Render security lines as SVG
    * @param {number} width - Page width in mm
    * @param {number} height - Page height in mm
@@ -110,42 +150,14 @@ export class SecurityLayer {
         viewBox="0 0 ${width} ${height}"
         style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"
         xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
         data-hash="${this.hash}"
         data-line-count="${lines.length}"
       >
         <g>
     `;
 
-    lines.forEach(line => {
-      // Convert percentages to mm
-      const x1 = (line.x / 100) * width;
-      const y1 = (line.y / 100) * height;
-      
-      // Calculate end point based on angle and length
-      const angleRad = line.angle * Math.PI / 180;
-      const x2 = x1 + Math.cos(angleRad) * line.length;
-      const y2 = y1 + Math.sin(angleRad) * line.length;
-      
-      // Add slight waviness (curve)
-      const midX = (x1 + x2) / 2 + Math.sin(line.angle * 0.1) * line.waviness * 3;
-      const midY = (y1 + y2) / 2 + Math.cos(line.angle * 0.1) * line.waviness * 3;
-
-      // Use cubic bezier for wavy effect
-      const path = line.waviness > 0.1
-        ? `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`
-        : `M ${x1} ${y1} L ${x2} ${y2}`;
-
-      svg += `
-        <path
-          d="${path}"
-          stroke="hsla(${line.hue}, 40%, 35%, ${line.opacity})"
-          stroke-width="${line.thickness}"
-          stroke-dasharray="${line.dash.join(', ')}"
-          data-line-id="${line.id}"
-          fill="none"
-        />
-      `;
-    });
+    svg += this._renderLines(lines, width, height);
 
     svg += `
         </g>

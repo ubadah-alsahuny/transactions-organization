@@ -1,4 +1,5 @@
 import { SecurityLayer } from '../layers/SecurityLayer';
+import { MicrotextSecurityLayer } from '../layers/MicrotextSecurityLayer';
 import { GuillocheLayer } from '../layers/GuillocheLayer';
 import { StaticLayer } from '../layers/StaticLayer';
 import { DynamicLayer } from '../layers/DynamicLayer';
@@ -35,16 +36,21 @@ export class DocumentBuilder {
    * Build security layer with hash
    * @param {string} dataHash - Hash from blockchain/backend
    * @param {Object} config - Security layer configuration
+   * @param {boolean} [config.useMicrotext=true] - Use microtext (heavy) or stroke (light) rendering
    * @returns {DocumentBuilder} This instance for chaining
    */
   buildSecurityLayer(dataHash, config = {}) {
-    this.documentData.securityLayer = new SecurityLayer(dataHash, config);
+    const useMicrotext = config.useMicrotext !== false;
+    this.documentData.securityLayer = useMicrotext
+      ? new MicrotextSecurityLayer(dataHash, config)
+      : new SecurityLayer(dataHash, config);
     this.documentData.metadata.hash = dataHash;
     return this;
   }
 
   /**
    * Build guilloché layer with hash
+   * Guilloché is always stroke-based (microtext is not applied to guilloche patterns).
    * @param {string} dataHash - Hash for pattern generation
    * @param {Object} config - Guilloché layer configuration
    * @returns {DocumentBuilder} This instance for chaining
@@ -123,6 +129,14 @@ export class DocumentBuilder {
       throw new Error('Static layer is required. Call buildStaticLayer() first.');
     }
     if (!this.documentData.dynamicLayer) {
+      throw new Error('Dynamic layer is required. Call buildDynamicLayer() first.');
+    }
+
+    if (!this.documentData.guillocheLayer) {
+      throw new Error('guillocheLayer is required. Call buildDynamicLayer() first.');
+    }
+
+    if (!this.documentData.securityLayer) {
       throw new Error('Dynamic layer is required. Call buildDynamicLayer() first.');
     }
 

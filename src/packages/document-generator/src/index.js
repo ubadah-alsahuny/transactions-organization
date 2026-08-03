@@ -5,6 +5,9 @@ import { DocumentBuilder } from './core/DocumentBuilder';
 import { Document } from './core/Document';
 import { SecurityLayer } from './layers/SecurityLayer';
 import { GuillocheLayer } from './layers/GuillocheLayer';
+import { MicrotextSecurityLayer } from './layers/MicrotextSecurityLayer';
+import { MicrotextGuillocheLayer } from './layers/MicrotextGuillocheLayer';
+import { MicrotextEngine } from './layers/MicrotextEngine';
 import { StaticLayer } from './layers/StaticLayer';
 import { DynamicLayer } from './layers/DynamicLayer';
 import { DataAdapter } from './adapters/DataAdapter';
@@ -17,6 +20,9 @@ export {
   Document,
   SecurityLayer,
   GuillocheLayer,
+  MicrotextSecurityLayer,
+  MicrotextGuillocheLayer,
+  MicrotextEngine,
   StaticLayer,
   DynamicLayer,
   DataAdapter,
@@ -34,6 +40,9 @@ export default {
   Document,
   SecurityLayer,
   GuillocheLayer,
+  MicrotextSecurityLayer,
+  MicrotextGuillocheLayer,
+  MicrotextEngine,
   StaticLayer,
   DynamicLayer,
   DataAdapter,

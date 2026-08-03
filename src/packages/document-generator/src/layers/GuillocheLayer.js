@@ -593,16 +593,10 @@ export class GuillocheLayer {
   }
 
   /**
-   * Main entry point — assembles all guilloché sub-patterns
-   * and returns the combined SVG markup.
+   * Build the viewport configuration used by all sub-generators.
+   * Extracted so subclasses and canvas renderers can reuse the same geometry.
    */
-  generateRosette(width, height) {
-    const rng = this.createRNG(this.seed);
-    const cx = width / 2;
-    const cy = this.config.centerY;
-    const R = this.config.arcRadius;
-    const points = 200 + (this.seed % 80);
-
+  _computeViewport(width, height, cy) {
     const yMin = -2;
     const yMax = height;
     const minDistance = yMin - cy;
@@ -612,11 +606,9 @@ export class GuillocheLayer {
     let arcRatio = 1;
     let skipOptimization = false;
 
-    // Only apply optimizations if the center is located above the viewport
     if (minDistance > 0) {
-      const thetaMin = Math.atan2(minDistance, width - cx);
-      const thetaMax = Math.atan2(minDistance, -cx);
-      // Add a safety margin (0.2 radians) for waves & distortion
+      const thetaMin = Math.atan2(minDistance, width - (width / 2));
+      const thetaMax = Math.atan2(minDistance, -(width / 2));
       startTheta = Math.max(0, thetaMin - 0.2);
       endTheta = Math.min(Math.PI, thetaMax + 0.2);
       arcRatio = (endTheta - startTheta) / (Math.PI * 2);
@@ -624,57 +616,69 @@ export class GuillocheLayer {
       skipOptimization = true;
     }
 
-    const viewport = {
-      yMin,
-      yMax,
-      width,
-      minDistance,
-      startTheta,
-      endTheta,
-      arcRatio,
-      skipOptimization
-    };
+    return { yMin, yMax, width, minDistance, startTheta, endTheta, arcRatio, skipOptimization };
+  }
+
+  /**
+   * Generate all path descriptors without rendering to SVG.
+   * Returns an array of { d, color, thickness, opacity, strokeLinecap, strokeLinejoin, zIndex }.
+   * Also returns the computed viewport so callers can render microdots themselves.
+   */
+  getPathData(width, height) {
+    const rng = this.createRNG(this.seed);
+    const cx = width / 2;
+    const cy = this.config.centerY;
+    const R = this.config.arcRadius;
+    const points = 200 + (this.seed % 80);
+    const viewport = this._computeViewport(width, height, cy);
 
     const allPaths = [];
 
-    // Layer 1: Radial spokes (background starburst)
     allPaths.push(...this.generateRadialSpokes(cx, cy, R, rng, viewport));
-
-    // Layer 2: Concentric rings with compound waves
     allPaths.push(...this.generateConcentricRings(cx, cy, R, rng, points, viewport));
-
-    // Layer 3: Fine high-frequency rings
     allPaths.push(...this.generateFineRings(cx, cy, R, rng, points, viewport));
-
-    // Layer 4: Cross-hatch intersecting rings
     allPaths.push(...this.generateCrossHatch(cx, cy, R, rng, points, viewport));
-
-    // Layer 5: Spiral connectors bridging ring layers
     allPaths.push(...this.generateSpiralConnectors(cx, cy, R, rng, points, viewport));
-
-    // Layer 6: Lissajous overlay curves
     allPaths.push(...this.generateLissajousCurves(cx, cy, R, rng, points, viewport));
-
-    // Layer 7: Central medallion focal point
     allPaths.push(...this.generateCentralMedallion(cx, cy, R, rng, points, viewport));
-
-    // Layer 8: Moiré interference rings
     allPaths.push(...this.generateMoireRings(cx, cy, R, rng, points, viewport));
 
-    // Sort by zIndex so background elements render first
     allPaths.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
 
-    // Render all paths to SVG strings
-    let svg = '';
-    for (const p of allPaths) {
-      svg += `<path d="${p.d}" fill="none" stroke="${p.color}" stroke-width="${p.thickness.toFixed(3)}" stroke-opacity="${p.opacity.toFixed(3)}" stroke-linecap="${p.strokeLinecap}" stroke-linejoin="${p.strokeLinejoin}" />\n`;
-    }
+    return { paths: allPaths, viewport, cx, cy, R, rng };
+  }
+
+  /**
+   * Main entry point — assembles all guilloché sub-patterns
+   * and returns the combined SVG markup.
+   */
+  generateRosette(width, height) {
+    const { paths: allPaths, viewport, cx, cy, R, rng } = this.getPathData(width, height);
+
+    // ── Rendering: delegated so subclasses can swap stroke → microtext ──
+    let svg = this._renderPathCollection(allPaths);
 
     // Layer 9: Micro-dots (rendered as circles, not paths)
     svg += this.generateMicroDots(cx, cy, R, rng, viewport);
 
     return svg;
   }
+  /**
+   * Protected render hook — converts path descriptor objects to SVG markup.
+   * Subclasses override this single method to change rendering strategy
+   * (e.g. stroke → microtext) without touching any of the math generators.
+   *
+   * @param  {Array<{d,color,thickness,opacity,strokeLinecap,strokeLinejoin}>} paths
+   * @returns {string} SVG markup string (no wrapping <svg> tag)
+   */
+  _renderPathCollection(paths) {
+    let svg = '';
+    for (const p of paths) {
+      svg += `<path d="${p.d}" fill="none" stroke="${p.color}" stroke-width="${p.thickness.toFixed(3)}" stroke-opacity="${p.opacity.toFixed(3)}" stroke-linecap="${p.strokeLinecap}" stroke-linejoin="${p.strokeLinejoin}" />\n`;
+    }
+    return svg;
+  }
+
   renderSVG(width = constants.PAGE_WIDTH, height = 80) {
     const svgHeight = height;
     const svgTop = -2;
@@ -685,6 +689,7 @@ export class GuillocheLayer {
         viewBox="0 ${svgTop} ${width} ${svgHeight}"
         style="position:absolute;top:0;left:0;width:100%;height:${svgHeight}mm;overflow:hidden;pointer-events:none;z-index:0;"
         xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
         data-hash="${this.hash}"
       >
         ${paths}

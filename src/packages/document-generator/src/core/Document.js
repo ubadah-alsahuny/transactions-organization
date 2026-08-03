@@ -510,9 +510,27 @@ body {
     if (!win) {
       throw new Error('Could not open preview window. Please allow popups.');
     }
-    win.document.write(this.render());
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8" /><title>Loading...</title></head><body style="font-family:system-ui, -apple-system, sans-serif; padding: 24px;"><div style="display:flex; align-items:center; gap:12px;"><div style="width:16px;height:16px;border:2px solid #ccc;border-top-color:#154239;border-radius:50%;animation:spin 1s linear infinite;"></div><div>Generating preview…</div></div><style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style></body></html>`);
     win.document.close();
     win.focus();
+
+    setTimeout(() => {
+      try {
+        const html = this.render();
+        win.document.open();
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        win.document.open();
+        win.document.write(
+          `<!DOCTYPE html><html><head><meta charset="UTF-8" /><title>Preview Error</title></head><body style="font-family:system-ui, -apple-system, sans-serif; padding: 24px;"><h2 style="margin:0 0 12px;">Preview failed</h2><pre style="white-space:pre-wrap; background:#f6f6f6; padding:12px; border-radius:8px;">${message}</pre></body></html>`
+        );
+        win.document.close();
+        win.focus();
+      }
+    }, 50);
     return win;
   }
 

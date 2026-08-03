@@ -35,6 +35,7 @@ import CoManagerRequestHistoryDetails from '../pages/co-manager/Requests/Request
 
 
 import CoManagerMyProfile from '../pages/co-manager/MyProfile';
+import SecurityLayersPlayground from '../pages/shared/SecurityLayersPlayground';
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,10 @@ const router = createBrowserRouter([
   {
     path: '/403',
     element: <Forbidden />,
+  },
+  {
+    path: '/debug/security-layers',
+    element: <SecurityLayersPlayground />,
   },
   {
     path: "*",

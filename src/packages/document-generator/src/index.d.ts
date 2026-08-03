@@ -25,6 +25,33 @@ export class GuillocheLayer {
   renderSVG(width?: number, height?: number): string;
 }
 
+export class SecurityLayer {
+  constructor(dataHash: string, config?: Record<string, any>);
+  renderSVG(width?: number, height?: number): string;
+}
+
+export class MicrotextGuillocheLayer extends GuillocheLayer {
+  constructor(dataHash: string, config?: Record<string, any>);
+}
+
+export class MicrotextSecurityLayer extends SecurityLayer {
+  constructor(dataHash: string, config?: Record<string, any>);
+}
+
+export class MicrotextEngine {
+  constructor(config?: Record<string, any>);
+  fontSizeFromThickness(strokeWidth: number): number;
+  pathId(hashSlice: string, index: number): string;
+  buildContent(repeatCount?: number): string;
+  renderTextPathPair(
+    id: string,
+    pathData: string,
+    color: string,
+    opacity: number,
+    fontSize?: number
+  ): { def: string; text: string };
+}
+
 export class DocumentBuilder {
   constructor();
   buildSecurityLayer(dataHash: string, config?: Record<string, any>): this;
