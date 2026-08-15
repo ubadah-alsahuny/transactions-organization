@@ -5,7 +5,8 @@ import EmployeeLogin from '../pages/employee/EmployeeLogin';
 import EmployeePendingRequestsList from '../pages/employee/PendingRequestsList';
 import EmployeeRequestDetails from '../pages/employee/RequestDetails';
 import EmployeeMyProfile from '../pages/employee/MyProfile';
-import EmployeeVerification from '../pages/employee/EmployeeVerification';
+// import EmployeeVerification from '../pages/employee/EmployeeVerification'; // Legacy code
+import EmployeeTrackRequest from '../pages/employee/EmployeeTrackRequest';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import Landing from '../pages/shared/Landing';
@@ -32,7 +33,8 @@ import CoManagerPendingRequestsList from '../pages/co-manager/Requests/PendingRe
 import CoManagerPendingRequestDetails from '../pages/co-manager/Requests/PendingRequestDetails';
 import CoManagerRequestHistoryList from '../pages/co-manager/Requests/RequestHistoryList';
 import CoManagerRequestHistoryDetails from '../pages/co-manager/Requests/RequestHistoryDetails';
-
+// import CoManagerVerification from '../pages/co-manager/Requests/CoManagerVerification'; // Legacy code
+import CoManagerTrackRequest from '../pages/co-manager/Requests/CoManagerTrackRequest';
 
 import CoManagerMyProfile from '../pages/co-manager/MyProfile';
 import SecurityLayersPlayground from '../pages/shared/SecurityLayersPlayground';
@@ -99,6 +101,8 @@ const router = createBrowserRouter([
           { path: 'requests/running/:requestId', element: <CoManagerRequestDetails /> },
           { path: 'requests/history', element: <CoManagerRequestHistoryList /> },
           { path: 'requests/history/:requestId', element: <CoManagerRequestHistoryDetails /> },
+          // { path: 'verify', element: <CoManagerVerification /> }, // Legacy code
+          { path: 'track', element: <CoManagerTrackRequest /> },
         ],
       },
     ],
@@ -116,7 +120,8 @@ const router = createBrowserRouter([
       { path: 'dashboard', element: <DashboardHome /> },
       { path: 'requests/pending', element: <EmployeePendingRequestsList /> },
       { path: 'requests/:requestId', element: <EmployeeRequestDetails /> },
-      { path: 'verify', element: <EmployeeVerification /> },
+      // { path: 'verify', element: <EmployeeVerification /> }, // Legacy code
+      { path: 'track', element: <EmployeeTrackRequest /> },
       { path: 'profile', element: <EmployeeMyProfile /> },
     ],
   },

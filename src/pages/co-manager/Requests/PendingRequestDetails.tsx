@@ -9,38 +9,7 @@ import type { CoManagerRequestDetailsResponse } from '../../../types/request.typ
 import { formatDateTime } from '../../../utils/dateFormatter';
 import { filterInitialData, filterStepOneData } from '../../../utils/dataFilter';
 import { useAuthStore } from '../../../stores/authStore';
-
-const DataCard = ({ data, title }: { data: Record<string, any>; title?: string }) => {
-  if (!data || Object.keys(data).length === 0) return null;
-  return (
-    <div className="flex flex-col gap-2 mt-2" dir="rtl">
-      {title && (
-        <div className="text-sm font-semibold text-[var(--color-sub-text)] border-b border-[var(--color-outine)] pb-1">
-          {title}
-        </div>
-      )}
-      {Object.entries(data).map(([key, value]) => (
-        <div
-          key={key}
-          className="bg-[var(--color-section)] p-3 rounded-xl border border-[var(--color-outine)] flex flex-col gap-1"
-        >
-          <div className="text-xs text-[var(--color-sub-text)] font-mono font-bold text-[var(--color-action)]">
-            {key}
-          </div>
-          <div className="text-sm font-medium break-words whitespace-pre-wrap text-[var(--color-text)]">
-            {typeof value === 'boolean'
-              ? value
-                ? 'نعم'
-                : 'لا'
-              : typeof value === 'object'
-                ? JSON.stringify(value)
-                : String(value)}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+import DataCard from '../../../components/common/DataCard';
 
 export default function PendingRequestDetails() {
   const { requestId } = useParams();
@@ -48,6 +17,13 @@ export default function PendingRequestDetails() {
   const { user } = useAuthStore();
 
   const uuidPrefix = user?.id ? user.id.substring(0, 2).toUpperCase() : 'XX';
+
+  const handleViewLinkedRequest = (uuid: string) => {
+    const nationalId = details?.request.citizen.nationalId;
+    if (!nationalId) return;
+    const url = `/dashboard/co-manager/track?requestId=${uuid}&nationalId=${encodeURIComponent(nationalId)}`;
+    window.open(url, '_blank');
+  };
 
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -168,7 +144,7 @@ export default function PendingRequestDetails() {
           {details.request.intialData && Object.keys(details.request.intialData).length > 0 && (
             <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
               <div className="text-lg font-bold mb-3">البيانات الأولية من المواطن</div>
-              <DataCard data={filterInitialData(details.request.intialData)} />
+              <DataCard data={filterInitialData(details.request.intialData)} onViewDetails={handleViewLinkedRequest} />
             </div>
           )}
 
@@ -195,7 +171,7 @@ export default function PendingRequestDetails() {
                       <div className="text-sm text-[var(--color-sub-text)] mb-2">
                         معالجة بواسطة: {step.employeeName} في {formatDateTime(step.processedAt)}
                       </div>
-                      {stepData && Object.keys(stepData).length > 0 && <DataCard data={stepData} />}
+                      {stepData && Object.keys(stepData).length > 0 && <DataCard data={stepData} onViewDetails={handleViewLinkedRequest} />}
                     </div>
                   );
                 })}

@@ -1,12 +1,12 @@
 import { Search } from 'lucide-react';
 import { useState } from 'react';
-import VerificationModal from '../../components/verification/VerificationModal';
-import { Toast } from '../../components/common/Toast';
-import sectionStyles from '../../components/layout/section.module.css';
-import { verificationService } from '../../services/verification.service';
-import type { VerificationResult } from '../../types/verification.types';
+import VerificationModal from '../../../components/verification/VerificationModal';
+import { Toast } from '../../../components/common/Toast';
+import sectionStyles from '../../../components/layout/section.module.css';
+import { verificationService } from '../../../services/verification.service';
+import type { VerificationResult } from '../../../types/verification.types';
 
-export default function EmployeeVerification() {
+export default function CoManagerVerification() {
   const [requestId, setRequestId] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [showModal, setShowModal] = useState(false);

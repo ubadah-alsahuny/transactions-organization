@@ -103,9 +103,9 @@ self.onmessage = (event: MessageEvent<RequestMessage>) => {
     }
 
     bitmap = canvas.transferToImageBitmap();
-    self.postMessage({ id, bitmap, durationMs: performance.now() - startedAt } as ResponseMessage, [bitmap]);
+    (self as any).postMessage({ id, bitmap, durationMs: performance.now() - startedAt } as ResponseMessage, [bitmap]);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    self.postMessage({ id, bitmap: null, durationMs: performance.now() - startedAt, error: msg } as ResponseMessage);
+    (self as any).postMessage({ id, bitmap: null, durationMs: performance.now() - startedAt, error: msg } as ResponseMessage);
   }
 };

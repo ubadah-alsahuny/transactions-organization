@@ -45,5 +45,25 @@ export const requestHistoryService = {
     );
     return response.data;
   },
+  getExternalCoManagerHistoryDetails: async (
+    requestId: string,
+    queryParams: { citizenNationalId?: string; transactionId?: string }
+  ): Promise<ApiResponse<RequestHistoryDetailsResponse>> => {
+    const response = await api.get<ApiResponse<RequestHistoryDetailsResponse>>(
+      `/co-manager/requests/history/external/${requestId}`,
+      { params: queryParams }
+    );
+    return response.data;
+  },
+  getExternalEmployeeHistoryDetails: async (
+    requestId: string,
+    queryParams: { citizenNationalId?: string; transactionId?: string }
+  ): Promise<ApiResponse<RequestHistoryDetailsResponse>> => {
+    const response = await api.get<ApiResponse<RequestHistoryDetailsResponse>>(
+      `/employee/requests/history/external/${requestId}`,
+      { params: queryParams }
+    );
+    return response.data;
+  },
 };
 

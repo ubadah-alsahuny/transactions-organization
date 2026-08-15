@@ -5,28 +5,28 @@
  * Converts SVG path data into microtext-along-path security elements.
  *
  * ╔══════════════════════════════════════════════════════════════════════╗
- * ║  SECURITY PRINCIPLE — WHY MICROTEXT WORKS AS A SECURITY LINE        ║
+ * ║  SECURITY PRINCIPLE — WHY MICROTEXT WORKS AS A SECURITY LINE         ║
  * ╠══════════════════════════════════════════════════════════════════════╣
- * ║  At font-size 0.50 mm (≈ 1.4 pt) in a 210 mm coordinate space:    ║
+ * ║  At font-size 0.50 mm (≈ 1.4 pt) in a 210 mm coordinate space:       ║
  * ║                                                                      ║
- * ║  PDF viewer  100% zoom : 0.50mm → ~1.4 px/glyph                   ║
- * ║              Individual characters invisible → reads as a line      ║
+ * ║  PDF viewer  100% zoom : 0.50mm → ~1.4 px/glyph                      ║
+ * ║              Individual characters invisible → reads as a line       ║
  * ║                                                                      ║
- * ║  PDF viewer  800% zoom : 0.50mm → ~11 px/glyph                    ║
- * ║              Bold monospace glyphs resolve → "GOV-IL · A3F8C2D1"  ║
+ * ║  PDF viewer  800% zoom : 0.50mm → ~11 px/glyph                       ║
+ * ║              Bold monospace glyphs resolve → "GOV-IL · A3F8C2D1"     ║
  * ║                                                                      ║
- * ║  Printer  300 dpi      : 0.50mm → ~5.9 px/glyph                   ║
- * ║              Ink dots larger than glyph detail → smeared line       ║
+ * ║  Printer  300 dpi      : 0.50mm → ~5.9 px/glyph                      ║
+ * ║              Ink dots larger than glyph detail → smeared line        ║
  * ║                                                                      ║
- * ║  Printer  600 dpi      : 0.50mm → ~11.8 px/glyph                  ║
- * ║              Fonts merge into noise bands, word unreadable          ║
+ * ║  Printer  600 dpi      : 0.50mm → ~11.8 px/glyph                     ║
+ * ║              Fonts merge into noise bands, word unreadable           ║
  * ║                                                                      ║
- * ║  Printer 1200 dpi      : 0.50mm → ~23.6 px/glyph                  ║
- * ║              Professional equipment — marginally readable, but at   ║
- * ║              0.40 mm (fontSizeMin) even 1200 dpi cannot resolve    ║
+ * ║  Printer 1200 dpi      : 0.50mm → ~23.6 px/glyph                     ║
+ * ║              Professional equipment — marginally readable, but at    ║
+ * ║              0.40 mm (fontSizeMin) even 1200 dpi cannot resolve      ║
  * ║                                                                      ║
- * ║  Cryptographic anchor: same hash → same seed → same patterns.      ║
- * ║  Institution can recompute from chain and compare to verify.        ║
+ * ║  Cryptographic anchor: same hash → same seed → same patterns.        ║
+ * ║  Institution can recompute from chain and compare to verify.         ║
  * ╚══════════════════════════════════════════════════════════════════════╝
  *
  * Usage:

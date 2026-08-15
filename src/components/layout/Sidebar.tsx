@@ -30,11 +30,13 @@ export default function Sidebar() {
               : []),
             { to: '/dashboard/co-manager/requests/running', label: 'الطلبات الجارية', icon: <Building2 size={18} /> },
             { to: '/dashboard/co-manager/requests/history', label: 'سجل الطلبات', icon: <History size={18} /> },
+            { to: '/dashboard/co-manager/track', label: 'تتبع', icon: <ShieldCheck size={18} /> },
+
           ]
         : [
             { to: '/employee/dashboard', label: 'الرئيسية', icon: <Home size={18} /> },
             { to: '/employee/requests/pending', label: 'الطلبات المعلقة', icon: <Building2 size={18} /> },
-            { to: '/employee/verify', label: 'تحقق', icon: <ShieldCheck size={18} /> },
+            { to: '/employee/track', label: 'تتبع', icon: <ShieldCheck size={18} /> },
             { to: '/employee/profile', label: 'حسابي', icon: <UserRound size={18} /> },
           ];
 

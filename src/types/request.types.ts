@@ -9,6 +9,7 @@ export type RunningRequestCitizen = {
 export type RunningRequestLastProgress = {
   stepOrder: number;
   sectionId: string;
+  institutionName?: string;
   sectionName: string;
   lastStepStatus: StepStatus;
   lastStepProcessedAt: string | null;

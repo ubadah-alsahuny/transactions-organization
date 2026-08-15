@@ -111,6 +111,7 @@ export default function RequestDetails() {
             <div className="text-sm text-[var(--color-sub-text)]">المعاملة</div>
             <div className="mt-1 font-bold">{request.transactionName}</div>
           </div>
+          
           <div className="rounded-3xl border border-[var(--color-outine)] bg-[var(--color-primary)] p-5">
             <div className="text-sm text-[var(--color-sub-text)]">المواطن</div>
             <div className="mt-1 font-bold">{request.citizen.name}</div>
@@ -125,7 +126,9 @@ export default function RequestDetails() {
             <div className="text-sm text-[var(--color-sub-text)]">آخر تقدم</div>
             <div className="mt-1 font-semibold">
               الخطوة {request.lastProgress.stepOrder} • {request.lastProgress.sectionName}
+              {request.lastProgress.institutionName ? ` • ${request.lastProgress.institutionName}` : ''}
             </div>
+
             <div className="mt-1 text-sm text-[var(--color-sub-text)]">
               حالة الخطوة: {request.lastProgress.lastStepStatus}
             </div>

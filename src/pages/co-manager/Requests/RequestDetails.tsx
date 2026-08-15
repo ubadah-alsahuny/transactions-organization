@@ -125,6 +125,7 @@ export default function RequestDetails() {
             <div className="text-sm text-[var(--color-sub-text)]">آخر تقدم</div>
             <div className="mt-1 font-semibold">
               الخطوة {request.lastProgress.stepOrder} • {request.lastProgress.sectionName}
+              {request.lastProgress.institutionName ? ` • ${request.lastProgress.institutionName}` : ''}
             </div>
             <div className="mt-1 text-sm text-[var(--color-sub-text)]">
               حالة الخطوة: {request.lastProgress.lastStepStatus}

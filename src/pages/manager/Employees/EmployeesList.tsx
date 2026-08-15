@@ -139,7 +139,8 @@ export default function EmployeesList() {
       if (res.success) {
         Toast.success('تم توظيف الموظف وتعيينه');
         setIsHireOpen(false);
-        loadEmployees();
+        await loadEmployees();
+        await loadSections();
         return;
       }
       Toast.error(res.error ?? 'فشل توظيف الموظف');
@@ -164,17 +165,25 @@ export default function EmployeesList() {
 
     setIsAssigning(true);
     try {
+      let isSuccess = false;
       if (assignMode === 'assign') {
         const res = await employeesService.assignToSection({ employeeId: targetEmployee.user_id, sectionId: targetSectionId });
-        if (res.success) Toast.success('تم تعيين الموظف إلى القسم');
-        else Toast.error(res.error ?? 'فشل تعيين الموظف');
+        if (res.success) {
+          Toast.success('تم تعيين الموظف إلى القسم');
+          isSuccess = true;
+        } else Toast.error(res.error ?? 'فشل تعيين الموظف');
       } else {
         const res = await employeesService.transitionToSection({ employeeId: targetEmployee.user_id, sectionId: targetSectionId });
-        if (res.success) Toast.success(res.data?.message ?? 'تم نقل الموظف');
-        else Toast.error(res.error ?? 'فشل نقل الموظف');
+        if (res.success) {
+          Toast.success(res.data?.message ?? 'تم نقل الموظف');
+          isSuccess = true;
+        } else Toast.error(res.error ?? 'فشل نقل الموظف');
       }
       setIsAssignOpen(false);
-      loadEmployees();
+      if (isSuccess) {
+        await loadEmployees();
+        await loadSections();
+      }
     } catch (error: any) {
       Toast.error(error.response?.data?.error ?? 'حدث خطأ أثناء العملية');
     } finally {
@@ -187,10 +196,12 @@ export default function EmployeesList() {
     setIsFiring(true);
     try {
       const res = await employeesService.fireFromSection({ employeeId: confirmFireEmployee.user_id });
-      if (res.success) Toast.success(res.data?.message ?? 'تم فصل الموظف');
-      else Toast.error(res.error ?? 'فشل فصل الموظف');
+      if (res.success) {
+        Toast.success(res.data?.message ?? 'تم فصل الموظف');
+        await loadEmployees();
+        await loadSections();
+      } else Toast.error(res.error ?? 'فشل فصل الموظف');
       setConfirmFireEmployee(null);
-      loadEmployees();
     } catch (error: any) {
       Toast.error(error.response?.data?.error ?? 'حدث خطأ أثناء فصل الموظف');
     } finally {
@@ -264,7 +275,7 @@ export default function EmployeesList() {
       header: '',
       render: row => {
         // Hide action buttons for employees whose name contains "manager" (case-insensitive)
-        if (row.full_name.toLowerCase().includes('manager')) {
+        if (row.full_name.toLowerCase().includes('manager') ) {
           return null;
         }
 
