@@ -2,6 +2,7 @@ import { ArrowLeft, Search, ShieldCheck } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import DataCard from '../../components/common/DataCard';
+import Modal from '../../components/common/Modal';
 import RequestHistoryTimeline from '../../components/common/RequestHistoryTimeline';
 import { Toast } from '../../components/common/Toast';
 import VerificationModal from '../../components/verification/VerificationModal';
@@ -17,16 +18,22 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
   const initialNid = searchParams.get('nationalId') || '';
   const initialRefTx = searchParams.get('refTxId') || '';
   const initialReqId = searchParams.get('requestId') || '';
+  const initialNested = searchParams.get('nested') === '1';
 
   const [citizenNationalId, setCitizenNationalId] = useState(initialNid);
   const [referenceTransactionId, setReferenceTransactionId] = useState(initialRefTx);
   const [requestId, setRequestId] = useState(initialReqId);
   const [isLoading, setIsLoading] = useState(false);
   const [details, setDetails] = useState<RequestHistoryDetailsResponse | null>(null);
+  const [isNested, setIsNested] = useState(initialNested);
 
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [verifyResult, setVerifyResult] = useState<VerificationResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+
+  const [showMismatchModal, setShowMismatchModal] = useState(false);
+  const [mismatchRequestId, setMismatchRequestId] = useState('');
+  const [mismatchNationalId, setMismatchNationalId] = useState('');
 
   const [hasAutoSearched, setHasAutoSearched] = useState(false);
 
@@ -55,7 +62,13 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
       } else if (msg === 'Reference transaction request not found') {
         Toast.error('لم يتم العثور على طلب المعاملة المرجعي');
       } else if (msg?.includes('Citizen national ID does not match')) {
-        Toast.error('الرقم الوطني لا يتطابق مع هذا الطلب');
+        if (isNested) {
+          setMismatchRequestId(reqId);
+          setMismatchNationalId(nid);
+          setShowMismatchModal(true);
+        } else {
+          Toast.error('الرقم الوطني لا يتطابق مع هذا الطلب');
+        }
       } else if (msg?.includes('request not found')) {
         Toast.error('الطلب غير موجود');
       } else {
@@ -77,6 +90,7 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
     const trimmedId = requestId.trim();
     const trimmedNid = citizenNationalId.trim();
     const trimmedRefTx = referenceTransactionId.trim();
+    setIsNested(false);
 
     if (!trimmedId) {
       Toast.error('الرجاء إدخال معرف الطلب');
@@ -134,9 +148,20 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
   const handleViewDetails = (uuid: string) => {
     if (details) {
       const basePath = role === 'employee' ? '/employee/track' : '/dashboard/co-manager/track';
-      const url = `${basePath}?requestId=${uuid}&nationalId=${details.citizen.nationalId}`;
+      const url = `${basePath}?requestId=${uuid}&nationalId=${details.citizen.nationalId}&nested=1`;
       window.open(url, '_blank');
     }
+  };
+
+  const handleMismatchResubmit = () => {
+    const trimmed = mismatchNationalId.trim();
+    if (!trimmed) {
+      Toast.error('الرجاء إدخال الرقم الوطني');
+      return;
+    }
+    setShowMismatchModal(false);
+    setCitizenNationalId(trimmed);
+    executeSearch(mismatchRequestId, trimmed, '');
   };
 
   return (
@@ -220,7 +245,10 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
           <div className="mb-5 flex items-center justify-between">
             <button
               type="button"
-              onClick={() => setDetails(null)}
+              onClick={() => {
+                setDetails(null);
+                setIsNested(false);
+              }}
               className="inline-flex items-center gap-2 rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-2 font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors cursor-pointer"
             >
               <ArrowLeft size={16} />
@@ -287,6 +315,59 @@ export default function TrackRequest({ role }: { role: 'employee' | 'co_manager'
         result={verifyResult}
         isLoading={isVerifying}
       />
+
+      <Modal
+        open={showMismatchModal}
+        title="الرقم الوطني لا يتطابق مع هذا الطلب"
+        onClose={() => setShowMismatchModal(false)}
+        footer={
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setShowMismatchModal(false)}
+              className="px-4 py-2 rounded-xl border border-[var(--color-outine)] bg-transparent font-semibold hover:bg-[color-mix(in_srgb,var(--color-action),transparent_90%)] transition-colors"
+            >
+              إلغاء
+            </button>
+            <button
+              type="button"
+              onClick={handleMismatchResubmit}
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-action)] px-4 py-2 font-semibold text-white hover:opacity-90 transition-all cursor-pointer"
+            >
+              إعادة البحث
+            </button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-[var(--color-sub-text)]">
+            هذا الطلب يشير إلى معاملة مرجعية تابعة لمواطن آخر، الرجاء إدخال الرقم الوطني الصحيح لعرض تفاصيلها.
+          </p>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold">الرقم الوطني</label>
+            <input
+              type="text"
+              value={mismatchNationalId}
+              onChange={e => setMismatchNationalId(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleMismatchResubmit();
+              }}
+              placeholder="الرقم الوطني للمواطن"
+              className="w-full rounded-2xl border border-[var(--color-outine)] bg-transparent px-4 py-3 text-sm outline-none transition-colors focus:border-[var(--color-action)]"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold">معرف الطلب المرجعي</label>
+            <input
+              type="text"
+              value={mismatchRequestId}
+              readOnly
+              disabled
+              className="w-full rounded-2xl border border-[var(--color-outine)] bg-[var(--color-section)] px-4 py-3 text-sm font-mono outline-none opacity-60"
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

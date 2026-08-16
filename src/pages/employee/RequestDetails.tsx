@@ -21,7 +21,7 @@ export default function EmployeeRequestDetails() {
   const handleViewLinkedRequest = (uuid: string) => {
     const nationalId = details?.request.citizen.nationalId;
     if (!nationalId) return;
-    const url = `/employee/track?requestId=${uuid}&nationalId=${encodeURIComponent(nationalId)}`;
+    const url = `/employee/track?requestId=${uuid}&nationalId=${encodeURIComponent(nationalId)}&nested=1`;
     window.open(url, '_blank');
   };
 

@@ -21,7 +21,7 @@ export default function PendingRequestDetails() {
   const handleViewLinkedRequest = (uuid: string) => {
     const nationalId = details?.request.citizen.nationalId;
     if (!nationalId) return;
-    const url = `/dashboard/co-manager/track?requestId=${uuid}&nationalId=${encodeURIComponent(nationalId)}`;
+    const url = `/dashboard/co-manager/track?requestId=${uuid}&nationalId=${encodeURIComponent(nationalId)}&nested=1`;
     window.open(url, '_blank');
   };
 
