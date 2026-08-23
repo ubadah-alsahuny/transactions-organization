@@ -179,6 +179,10 @@ export default function EmployeesList() {
     {
       header: '',
       render: row => {
+        // Co-manager cannot appoint/transfer manager (or other co-managers) - role-based, not name-based
+        if (row.role === 'manager' || row.role === 'co_manager') {
+          return null;
+        }
         const isSelf = currentUser?.id === row.user_id;
         const canAct = row.is_active && !isSelf;
         const canAssign = canAct && row.section_id === null;

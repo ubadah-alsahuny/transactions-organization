@@ -14,6 +14,7 @@ export type EmployeeListItem = {
   is_active: boolean;
   section_id: string | null;
   section_name: string | null;
+  role?: string;
 };
 
 export type EmployeeListAllResponse = {
