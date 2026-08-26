@@ -56,7 +56,7 @@ export class DocumentBuilder {
    * @returns {DocumentBuilder} This instance for chaining
    */
   buildGuillocheLayer(dataHash, config = {}) {
-    this.documentData.guillocheLayer = new GuillocheLayer(dataHash, config);
+    // this.documentData.guillocheLayer = new GuillocheLayer(dataHash, config);
     return this;
   }
 
@@ -132,9 +132,9 @@ export class DocumentBuilder {
       throw new Error('Dynamic layer is required. Call buildDynamicLayer() first.');
     }
 
-    if (!this.documentData.guillocheLayer) {
-      throw new Error('guillocheLayer is required. Call buildDynamicLayer() first.');
-    }
+    // if (!this.documentData.guillocheLayer) {
+    //   throw new Error('guillocheLayer is required. Call buildDynamicLayer() first.');
+    // }
 
     if (!this.documentData.securityLayer) {
       throw new Error('Dynamic layer is required. Call buildDynamicLayer() first.');
